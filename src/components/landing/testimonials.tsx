@@ -1,174 +1,99 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { motion, useInView, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { cn } from "@/lib/utils"
+import { useRef } from "react"
+import { motion, useInView } from "framer-motion"
+import { Star, Quote } from "lucide-react"
 
 const testimonials = [
   {
-    name: "Sarah Chen",
-    designation: "Senior Software Engineer",
-    company: "Google",
-    initials: "SC",
+    name: "Kavitha Raman",
+    role: "Software Engineer at TechNova",
+    content:
+      "JobPortal helped me find my dream role within a week. The AI matching was incredibly accurate and I received three interview calls almost immediately.",
     rating: 5,
-    quote: "This platform's AI matching is incredible. I found my dream job at Google within 2 weeks. The personalized recommendations were spot-on with my skill set.",
-    color: "from-blue-500 to-purple-500",
+    avatar: "KR",
+    color: "from-[#2563eb] to-[#3b82f6]",
   },
   {
-    name: "Michael Rodriguez",
-    designation: "Product Designer",
-    company: "Airbnb",
-    initials: "MR",
+    name: "Arjun Mehta",
+    role: "HR Director at FinEdge Capital",
+    content:
+      "As an employer, JobPortal has transformed our hiring process. We've reduced time-to-hire by 40% and found exceptional talent for critical roles.",
     rating: 5,
-    quote: "The resume scoring feature helped me optimize my application. I went from 5% response rate to 40%. Absolutely game-changing for my career.",
-    color: "from-pink-500 to-rose-500",
+    avatar: "AM",
+    color: "from-[#10b981] to-[#34d399]",
   },
   {
-    name: "Emily Watson",
-    designation: "Data Science Lead",
-    company: "Netflix",
-    initials: "EW",
+    name: "Priyanka Desai",
+    role: "UX Designer at BrightWorks",
+    content:
+      "The resume builder and portfolio features really helped me stand out. I landed my current role through a recruiter who discovered me on JobPortal.",
     rating: 5,
-    quote: "As a hiring manager, this platform helped us find 3 exceptional candidates in one month. The AI pre-screening saves us countless hours.",
-    color: "from-emerald-500 to-teal-500",
-  },
-  {
-    name: "David Kim",
-    designation: "DevOps Engineer",
-    company: "Stripe",
-    initials: "DK",
-    rating: 5,
-    quote: "The smart search understands exactly what I'm looking for. No more scrolling through irrelevant listings. Every recommendation felt tailored to me.",
-    color: "from-orange-500 to-amber-500",
-  },
-  {
-    name: "Priya Sharma",
-    designation: "Engineering Manager",
-    company: "Meta",
-    initials: "PS",
-    rating: 5,
-    quote: "We've hired 12 people through this platform in the last quarter. The quality of candidates is unmatched. Our time-to-hire dropped by 60%.",
-    color: "from-violet-500 to-indigo-500",
+    avatar: "PD",
+    color: "from-[#7c3aed] to-[#a855f7]",
   },
 ]
 
 export function Testimonials() {
-  const [current, setCurrent] = useState(0)
-  const [direction, setDirection] = useState(1)
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: "-100px" })
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setDirection(1)
-      setCurrent((prev) => (prev + 1) % testimonials.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [])
-
-  const navigate = (dir: number) => {
-    setDirection(dir)
-    setCurrent((prev) => (prev + dir + testimonials.length) % testimonials.length)
-  }
-
-  const t = testimonials[current]
-
   return (
-    <section ref={ref} className="relative py-24">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5" />
-
-      <div className="relative mx-auto max-w-7xl px-4">
+    <section ref={ref} className="relative py-24 bg-[#f8fafc] dark:bg-[#0a0a0f]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <h2 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">
-            What People{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Say</span>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#f59e0b]/20 bg-[#f59e0b]/5 px-4 py-1.5 text-sm font-semibold text-[#f59e0b] dark:border-[#fbbf24]/20 dark:bg-[#fbbf24]/10 dark:text-[#fbbf24]">
+            Testimonials
+          </div>
+          <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-[#0f172a] sm:text-4xl dark:text-white">
+            What Our{" "}
+            <span className="bg-gradient-to-r from-[#f59e0b] to-[#ef4444] bg-clip-text text-transparent">
+              Users Say
+            </span>
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Trusted by professionals from top companies worldwide
+          <p className="text-lg text-[#64748b] dark:text-gray-400">
+            Real stories from real professionals
           </p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mx-auto max-w-3xl"
-        >
-          <div className="relative rounded-2xl border border-white/20 bg-white/10 p-8 backdrop-blur-xl shadow-2xl dark:bg-white/5 dark:border-white/10 md:p-12">
-            <Quote className="absolute left-6 top-6 h-10 w-10 text-primary/20" />
+        <div className="grid gap-6 md:grid-cols-3">
+          {testimonials.map((t, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: i * 0.15 }}
+              className="relative rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-[#111118]"
+            >
+              <Quote className="absolute right-4 top-4 h-8 w-8 text-[#e2e8f0] dark:text-white/5" />
 
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={current}
-                custom={direction}
-                initial={{ opacity: 0, x: direction * 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: direction * -40 }}
-                transition={{ duration: 0.4 }}
-                className="relative"
-              >
-                <div className="mb-6 flex items-center gap-1">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-
-                <p className="mb-8 text-lg leading-relaxed text-foreground/90 md:text-xl">
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-
-                <div className="flex items-center gap-4">
-                  <Avatar size="lg">
-                    <AvatarFallback className={cn("bg-gradient-to-br text-white font-bold", t.color)}>
-                      {t.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold text-foreground">{t.name}</p>
-                    <p className="text-sm text-muted-foreground">{t.designation} at {t.company}</p>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            <div className="mt-8 flex items-center justify-between">
-              <div className="flex gap-2">
-                {testimonials.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i) }}
-                    className={cn(
-                      "h-2 rounded-full transition-all duration-300",
-                      i === current ? "w-8 bg-primary" : "w-2 bg-white/20 hover:bg-white/30"
-                    )}
-                  />
+              <div className="mb-4 flex gap-1">
+                {Array.from({ length: t.rating }).map((_, j) => (
+                  <Star key={j} className="h-4 w-4 fill-[#f59e0b] text-[#f59e0b]" />
                 ))}
               </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={() => navigate(-1)}
-                  className="rounded-full border border-white/20 bg-white/10 p-2 text-foreground backdrop-blur-sm transition-all hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => navigate(1)}
-                  className="rounded-full border border-white/20 bg-white/10 p-2 text-foreground backdrop-blur-sm transition-all hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
+              <p className="mb-6 text-sm leading-relaxed text-[#475569] dark:text-gray-300">
+                &ldquo;{t.content}&rdquo;
+              </p>
+
+              <div className="flex items-center gap-3">
+                <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${t.color} text-xs font-bold text-white`}>
+                  {t.avatar}
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-[#0f172a] dark:text-white">{t.name}</p>
+                  <p className="text-xs text-[#94a3b8] dark:text-gray-500">{t.role}</p>
+                </div>
               </div>
-            </div>
-          </div>
-        </motion.div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   )

@@ -38,6 +38,8 @@ function ThemeToggle({ className }: ThemeToggleProps) {
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
+    // Mark mounted after hydration to avoid SSR mismatch
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [])
 

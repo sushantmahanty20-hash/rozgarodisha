@@ -9,10 +9,7 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  MoreHorizontal,
   Eye,
-  EyeOff,
-  Trash2,
   X,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -24,7 +21,6 @@ import { EmptyState } from "@/components/ui/empty-state"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
   DropdownMenuLabel,
@@ -159,6 +155,8 @@ function DataTable<T extends { id: string | number }>({
   }
 
   React.useEffect(() => {
+    // Reset to first page when search query changes
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentPage(1)
   }, [search])
 

@@ -6,12 +6,7 @@ import {
   Bell,
   Settings,
   Check,
-  Mail,
-  Smartphone,
-  Globe,
-  Server,
   Inbox,
-  AtSign,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

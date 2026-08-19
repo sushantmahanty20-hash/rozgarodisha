@@ -10,7 +10,6 @@ import {
   Briefcase,
   Share2,
   Heart,
-  ExternalLink,
   BadgeCheck,
   Image as ImageIcon,
   Gift,
@@ -18,8 +17,7 @@ import {
   Clock,
   DollarSign,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,8 +28,8 @@ import { Footer } from "@/components/layout/footer";
 const companyData = {
   id: "1",
   name: "TechCorp Inc.",
-  logo: null,
-  coverImage: null,
+  logo: undefined,
+  coverImage: undefined,
   industry: "Technology",
   size: "1,000-5,000",
   founded: "2010",

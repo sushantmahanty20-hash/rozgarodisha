@@ -4,16 +4,14 @@ import * as React from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Sparkles,
-  ArrowRight,
   ChevronDown,
   MapPin,
   Briefcase,
   DollarSign,
-  Clock,
   Zap,
 } from "lucide-react"
-import { cn, formatSalary, formatRelativeTime } from "@/lib/utils"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { cn, formatSalary } from "@/lib/utils"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"

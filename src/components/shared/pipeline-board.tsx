@@ -11,7 +11,7 @@ import {
   Star,
 } from "lucide-react"
 import { cn, formatRelativeTime } from "@/lib/utils"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -77,7 +77,6 @@ function ScoreBadge({ score }: { score: number }) {
 
 function CandidateCard({
   candidate,
-  columnId,
   columnIndex,
   totalColumns,
   onMove,

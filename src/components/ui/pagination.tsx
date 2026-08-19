@@ -21,7 +21,6 @@ function Pagination({
   totalPages,
   onPageChange,
   className,
-  showFirstLast = true,
   itemsPerPage,
   onItemsPerPageChange,
   itemsPerPageOptions = [10, 20, 30, 50],

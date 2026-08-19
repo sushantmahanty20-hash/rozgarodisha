@@ -7,16 +7,12 @@ import {
   Bot,
   User,
   Sparkles,
-  Lightbulb,
-  TrendingUp,
-  Target,
-  MessageSquare,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 interface Message {
   id: string
@@ -38,10 +34,10 @@ const suggestedPrompts = [
 
 const initialMessages: Message[] = [
   {
-    id: "1",
+    id: "0",
     role: "assistant",
     content: "Hi! I'm your AI career coach. I can help you with career planning, skill development, interview preparation, and more. What would you like to discuss?",
-    timestamp: new Date(Date.now() - 60000),
+    timestamp: new Date(),
   },
 ]
 
@@ -74,7 +70,7 @@ function CareerCoach({ className }: CareerCoachProps) {
     if (!content) return
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       role: "user",
       content,
       timestamp: new Date(),
@@ -90,7 +86,7 @@ function CareerCoach({ className }: CareerCoachProps) {
     ) || "default"
 
     const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
+      id: crypto.randomUUID(),
       role: "assistant",
       content: aiResponses[responseKey],
       timestamp: new Date(),

@@ -21,7 +21,7 @@ export const registerSchema = z
     confirmPassword: z.string(),
     role: z.enum(['jobseeker', 'employer']).default('jobseeker'),
     acceptTerms: z.literal(true, {
-      errorMap: () => ({ message: 'You must accept the terms and conditions' }),
+      message: 'You must accept the terms and conditions',
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {

@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import {
   Target,
   Eye,
@@ -228,12 +229,12 @@ export default function AboutPage() {
             <p className="mt-4 text-muted-foreground">
               We&apos;re always looking for talented people who share our passion.
             </p>
-            <a href="/jobs">
+            <Link href="/jobs">
               <button className="mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
                 <Zap className="h-4 w-4" />
                 View Open Positions
               </button>
-            </a>
+            </Link>
           </div>
         </div>
       </main>

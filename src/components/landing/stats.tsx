@@ -3,16 +3,23 @@
 import { useRef, useEffect, useState } from "react"
 import { motion, useInView, animate } from "framer-motion"
 import { Briefcase, Building2, Users, Trophy } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 const stats = [
-  { label: "Jobs Posted", value: 25000, suffix: "+", icon: Briefcase, color: "from-blue-500 to-cyan-400" },
-  { label: "Companies", value: 500, suffix: "+", icon: Building2, color: "from-violet-500 to-purple-400" },
-  { label: "Candidates Placed", value: 18000, suffix: "+", icon: Users, color: "from-emerald-500 to-teal-400" },
-  { label: "Success Rate", value: 95, suffix: "%", icon: Trophy, color: "from-orange-500 to-amber-400" },
+  { label: "Active Jobs", value: 150000, suffix: "+", icon: Briefcase, color: "from-[#2563eb] to-[#3b82f6]" },
+  { label: "Job Seekers", value: 50000, suffix: "+", icon: Users, color: "from-[#7c3aed] to-[#a855f7]" },
+  { label: "Companies", value: 10000, suffix: "+", icon: Building2, color: "from-[#06b6d4] to-[#22d3ee]" },
+  { label: "Successful Hires", value: 25000, suffix: "+", icon: Trophy, color: "from-[#10b981] to-[#34d399]" },
 ]
 
-function AnimatedCounter({ value, suffix, inView: isInView }: { value: number; suffix: string; inView: boolean }) {
+function AnimatedCounter({
+  value,
+  suffix,
+  inView: isInView,
+}: {
+  value: number
+  suffix: string
+  inView: boolean
+}) {
   const [display, setDisplay] = useState(0)
 
   useEffect(() => {
@@ -25,11 +32,10 @@ function AnimatedCounter({ value, suffix, inView: isInView }: { value: number; s
     return () => controls.stop()
   }, [isInView, value])
 
-  const formatted = value >= 1000 ? `${(display / 1000).toFixed(display >= 1000 ? 0 : 0)}K` : String(display)
-
   return (
     <span>
-      {value >= 1000 ? `${(display / 1000).toFixed(0)}K` : display}{suffix}
+      {value >= 1000 ? `${Math.floor(display / 1000)}K` : display}
+      {suffix}
     </span>
   )
 }
@@ -39,11 +45,11 @@ export function Stats() {
   const inView = useInView(ref, { once: true, margin: "-100px" })
 
   return (
-    <section ref={ref} className="relative py-24">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,primary/5,transparent_70%)]" />
+    <section ref={ref} className="relative py-24 bg-[#0f172a] dark:bg-[#050510]">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(37,99,235,0.15),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(124,58,237,0.1),transparent_50%)]" />
 
-      <div className="relative mx-auto max-w-7xl px-4">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
           {stats.map((stat, i) => {
             const Icon = stat.icon
@@ -55,14 +61,20 @@ export function Stats() {
                 transition={{ duration: 0.5, delay: i * 0.15 }}
                 className="group"
               >
-                <div className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-xl shadow-xl transition-all duration-300 hover:bg-white/15 hover:shadow-2xl dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/8">
-                  <div className={cn("mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-lg transition-transform duration-300 group-hover:scale-110", stat.color)}>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl transition-all duration-300 hover:bg-white/8 hover:shadow-2xl">
+                  <div
+                    className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}
+                  >
                     <Icon className="h-6 w-6" />
                   </div>
-                  <p className="mb-1 text-3xl font-bold text-foreground md:text-4xl">
-                    <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={inView} />
+                  <p className="mb-1 text-3xl font-extrabold text-white md:text-4xl">
+                    <AnimatedCounter
+                      value={stat.value}
+                      suffix={stat.suffix}
+                      inView={inView}
+                    />
                   </p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-sm font-medium text-gray-400">{stat.label}</p>
                 </div>
               </motion.div>
             )

@@ -3,7 +3,6 @@
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { ChevronDown, Check, Search, X } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 const Select = SelectPrimitive.Root
@@ -153,10 +152,10 @@ function SearchableSelect({
             if (
               React.isValidElement(child) &&
               child.type === SelectItem &&
-              typeof child.props.children === "string"
+              typeof (child as React.ReactElement<{ children: React.ReactNode }>).props.children === "string"
             ) {
               if (
-                child.props.children
+                ((child as React.ReactElement<{ children: React.ReactNode }>).props.children as string)
                   .toLowerCase()
                   .includes(search.toLowerCase())
               ) {

@@ -4,14 +4,11 @@ import * as React from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Search,
-  Bell,
-  BellOff,
   Trash2,
   Play,
   Bookmark,
   Filter,
   MapPin,
-  DollarSign,
   Briefcase,
 } from "lucide-react"
 import { cn } from "@/lib/utils"

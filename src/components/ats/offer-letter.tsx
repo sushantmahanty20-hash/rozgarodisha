@@ -8,7 +8,6 @@ import {
   Check,
   Clock,
   Eye,
-  Download,
   Edit3,
   DollarSign,
   Calendar,
@@ -30,7 +29,6 @@ interface OfferLetterProps {
 }
 
 function OfferLetter({ className }: OfferLetterProps) {
-  const [isEditing, setIsEditing] = React.useState(true)
   const [showPreview, setShowPreview] = React.useState(false)
   const [sending, setSending] = React.useState(false)
   const [status, setStatus] = React.useState<OfferStatus>("draft")

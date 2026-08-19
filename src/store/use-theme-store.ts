@@ -25,7 +25,7 @@ function resolveMode(theme: Theme): 'light' | 'dark' {
 
 export const useThemeStore = create<ThemeState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       theme: 'system' as Theme,
       mode: getSystemMode(),
       primaryColor: '#3b82f6',

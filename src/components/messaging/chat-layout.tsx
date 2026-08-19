@@ -1,10 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { motion } from "framer-motion"
 import { Plus, Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"

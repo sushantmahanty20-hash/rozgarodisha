@@ -9,15 +9,11 @@ import {
   XCircle,
   Star,
   Trash2,
-  ExternalLink,
-  Clock,
-  Filter,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Pagination } from "@/components/ui/pagination";
 import {
   DropdownMenu,
@@ -60,19 +56,19 @@ export default function AdminJobsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  function handleApprove(id: string) {
+  function handleApprove() {
     toast.success("Job approved successfully");
   }
 
-  function handleReject(id: string) {
+  function handleReject() {
     toast.success("Job rejected");
   }
 
-  function handleFeature(id: string) {
+  function handleFeature() {
     toast.success("Job featured");
   }
 
-  function handleDelete(id: string) {
+  function handleDelete() {
     toast.success("Job deleted");
   }
 
@@ -152,22 +148,22 @@ export default function AdminJobsPage() {
                           </DropdownMenuItem>
                           {job.status === "PENDING" && (
                             <>
-                              <DropdownMenuItem onClick={() => handleApprove(job.id)}>
+                              <DropdownMenuItem onClick={() => handleApprove()}>
                                 <CheckCircle2 className="h-4 w-4 mr-2 text-emerald-500" />
                                 Approve
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleReject(job.id)} className="text-destructive">
+                              <DropdownMenuItem onClick={() => handleReject()} className="text-destructive">
                                 <XCircle className="h-4 w-4 mr-2" />
                                 Reject
                               </DropdownMenuItem>
                             </>
                           )}
-                          <DropdownMenuItem onClick={() => handleFeature(job.id)}>
+                          <DropdownMenuItem onClick={() => handleFeature()}>
                             <Star className="h-4 w-4 mr-2 text-amber-500" />
                             Feature
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => handleDelete(job.id)} className="text-destructive">
+                          <DropdownMenuItem onClick={() => handleDelete()} className="text-destructive">
                             <Trash2 className="h-4 w-4 mr-2" />
                             Delete
                           </DropdownMenuItem>

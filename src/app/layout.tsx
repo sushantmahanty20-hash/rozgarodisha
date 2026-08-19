@@ -18,11 +18,11 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: "JobSphere - AI-Powered Job Portal",
-    template: "%s | JobSphere",
+    default: "JobPortal - Connecting Talent with Opportunity",
+    template: "%s | JobPortal",
   },
   description:
-    "Discover your dream career with AI-powered job matching, smart resume scoring, and personalized recommendations. Connect with top employers worldwide.",
+    "Discover your dream career with AI-powered job matching, smart resume scoring, and personalized recommendations. Connect with top employers worldwide through India's leading career marketplace.",
   keywords: [
     "jobs",
     "career",
@@ -34,31 +34,35 @@ export const metadata: Metadata = {
     "recruitment",
     "job search",
     "remote jobs",
+    "India jobs",
+    "tech jobs",
+    "Bengaluru jobs",
+    "Mumbai jobs",
   ],
-  authors: [{ name: "JobSphere" }],
-  creator: "JobSphere",
+  authors: [{ name: "JobPortal" }],
+  creator: "JobPortal",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://jobsphere.com",
-    siteName: "JobSphere",
-    title: "JobSphere - AI-Powered Job Portal",
+    url: "https://jobportal.com",
+    siteName: "JobPortal",
+    title: "JobPortal - Connecting Talent with Opportunity",
     description:
-      "Discover your dream career with AI-powered job matching, smart resume scoring, and personalized recommendations.",
+      "India's premier career marketplace. Find your dream job or hire the best talent with our AI-powered platform.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "JobSphere",
+        alt: "JobPortal",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "JobSphere - AI-Powered Job Portal",
+    title: "JobPortal - Connecting Talent with Opportunity",
     description:
-      "Discover your dream career with AI-powered job matching, smart resume scoring, and personalized recommendations.",
+      "India's premier career marketplace connecting talented professionals with top employers.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -79,20 +83,20 @@ export const viewport: Viewport = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "JobSphere",
-  url: "https://jobsphere.com",
-  logo: "https://jobsphere.com/logo.png",
+  name: "JobPortal",
+  url: "https://jobportal.com",
+  logo: "https://jobportal.com/logo.png",
   description:
-    "AI-powered job portal connecting talented professionals with top employers worldwide.",
+    "India's premier career marketplace connecting talented professionals with top employers worldwide.",
   sameAs: [
-    "https://twitter.com/jobsphere",
-    "https://linkedin.com/company/jobsphere",
-    "https://facebook.com/jobsphere",
+    "https://twitter.com/jobportal",
+    "https://linkedin.com/company/jobportal",
+    "https://facebook.com/jobportal",
   ],
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer service",
-    email: "support@jobsphere.com",
+    email: "support@jobportal.com",
   },
 };
 

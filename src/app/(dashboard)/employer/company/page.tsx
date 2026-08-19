@@ -4,10 +4,7 @@ import * as React from "react";
 import {
   Building2,
   Upload,
-  Globe,
-  MapPin,
   Users,
-  Calendar,
   Image as ImageIcon,
   Plus,
   Trash2,
@@ -17,7 +14,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 
 const teamMembers = [
   { id: "1", name: "Alex Chen", role: "CEO", email: "alex@techcorp.com" },

@@ -60,7 +60,6 @@ function Breadcrumb({
 
         {visibleSegments.map((segment, index) => {
           const isLast = index === visibleSegments.length - 1
-          const isEllipsis = segment.label === "..."
 
           return (
             <li key={index} className="flex items-center gap-1.5">

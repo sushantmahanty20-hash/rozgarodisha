@@ -7,7 +7,6 @@ import {
   Briefcase,
   MapPin,
   BadgeCheck,
-  ExternalLink,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"

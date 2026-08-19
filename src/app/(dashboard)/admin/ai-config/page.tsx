@@ -3,23 +3,18 @@
 import * as React from "react";
 import {
   Brain,
-  Settings,
   ToggleLeft,
   ToggleRight,
   Save,
-  BarChart3,
   Zap,
   MessageSquare,
   FileText,
-  Shield,
   RefreshCw,
   Plus,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 
 const aiModels = [
   { id: "gpt-4", name: "GPT-4", provider: "OpenAI", status: "active", requests: "12,450" },

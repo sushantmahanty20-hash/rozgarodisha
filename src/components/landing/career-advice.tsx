@@ -1,36 +1,37 @@
 "use client"
 
 import { useRef } from "react"
+import Link from "next/link"
 import { motion, useInView } from "framer-motion"
-import { Calendar, User, ArrowRight, BookOpen } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { Clock, ArrowRight } from "lucide-react"
 
 const articles = [
   {
-    title: "How to Ace Your Technical Interview in 2026",
-    excerpt: "Master the latest interview formats including AI-assisted coding rounds, system design, and behavioral assessments.",
-    date: "Aug 12, 2026",
-    author: "Jessica Park",
-    category: "Interview Tips",
-    color: "from-blue-500 to-purple-500",
+    title: "How to Build a Professional Resume That Gets Interviews",
+    excerpt: "Learn the art of crafting a resume that stands out to recruiters and passes through ATS systems.",
+    author: "JobPortal Team",
+    date: "Jan 15, 2026",
+    readTime: "5 min read",
+    category: "Resume Tips",
+    slug: "how-to-build-professional-resume",
   },
   {
-    title: "Building a Personal Brand That Gets You Hired",
-    excerpt: "Learn how to craft a compelling professional presence on LinkedIn, GitHub, and your personal portfolio.",
-    date: "Aug 8, 2026",
-    author: "Marcus Johnson",
+    title: "Top 10 In-Demand Tech Skills for 2026",
+    excerpt: "Discover the most sought-after technical skills that employers are looking for this year.",
+    author: "JobPortal Team",
+    date: "Feb 1, 2026",
+    readTime: "7 min read",
     category: "Career Growth",
-    color: "from-emerald-500 to-teal-500",
+    slug: "top-in-demand-tech-skills-2026",
   },
   {
-    title: "The Future of Remote Work: Trends & Opportunities",
-    excerpt: "Explore the evolving landscape of remote work and discover the skills that top remote employers are seeking.",
-    date: "Aug 3, 2026",
-    author: "Anika Patel",
-    category: "Industry Trends",
-    color: "from-orange-500 to-amber-500",
+    title: "Ace Your Next Technical Interview: A Complete Guide",
+    excerpt: "Master the art of technical interviews with our comprehensive preparation strategy.",
+    author: "JobPortal Team",
+    date: "Feb 15, 2026",
+    readTime: "8 min read",
+    category: "Interview Prep",
+    slug: "ace-technical-interview-guide",
   },
 ]
 
@@ -39,23 +40,25 @@ export function CareerAdvice() {
   const inView = useInView(ref, { once: true, margin: "-100px" })
 
   return (
-    <section ref={ref} className="relative py-24">
-      <div className="mx-auto max-w-7xl px-4">
+    <section ref={ref} className="relative py-24 bg-[#f8fafc] dark:bg-[#0a0a0f]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <Badge variant="info" size="lg" className="mb-4">
-            <BookOpen className="mr-1 h-3 w-3" />
-            Blog
-          </Badge>
-          <h2 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">
-            Career <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Advice</span>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#10b981]/20 bg-[#10b981]/5 px-4 py-1.5 text-sm font-semibold text-[#10b981] dark:border-[#34d399]/20 dark:bg-[#34d399]/10 dark:text-[#34d399]">
+            Career Advice
+          </div>
+          <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-[#0f172a] sm:text-4xl dark:text-white">
+            Latest{" "}
+            <span className="bg-gradient-to-r from-[#10b981] to-[#06b6d4] bg-clip-text text-transparent">
+              Career Insights
+            </span>
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Expert insights to accelerate your career growth
+          <p className="text-lg text-[#64748b] dark:text-gray-400">
+            Expert advice to help you grow your career
           </p>
         </motion.div>
 
@@ -66,43 +69,39 @@ export function CareerAdvice() {
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.15 }}
-              className="group"
             >
-              <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-white/15 dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/8">
-                <div className={cn("relative h-48 bg-gradient-to-br", article.color)}>
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <BookOpen className="h-12 w-12 text-white/60" />
+              <Link href={`/blog/${article.slug}`}>
+                <div className="group flex h-full flex-col rounded-2xl border border-[#e2e8f0] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-white/10 dark:bg-[#111118]">
+                  <div className="h-48 rounded-t-2xl bg-gradient-to-br from-[#10b981]/10 to-[#06b6d4]/10 dark:from-[#10b981]/5 dark:to-[#06b6d4]/5 flex items-center justify-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#10b981] to-[#06b6d4] text-white shadow-lg">
+                      <span className="text-2xl font-bold">{article.category[0]}</span>
+                    </div>
                   </div>
-                  <Badge variant="secondary" size="sm" className="absolute left-4 top-4 bg-black/30 text-white backdrop-blur-sm border-0">
-                    {article.category}
-                  </Badge>
-                </div>
-
-                <div className="flex flex-1 flex-col p-6">
-                  <h3 className="mb-2 text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
-                    {article.title}
-                  </h3>
-                  <p className="mb-4 flex-1 text-sm leading-relaxed text-muted-foreground">
-                    {article.excerpt}
-                  </p>
-
-                  <div className="mb-4 flex items-center gap-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <User className="h-3.5 w-3.5" />
-                      {article.author}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5" />
-                      {article.date}
-                    </span>
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="mb-3">
+                      <span className="rounded-full bg-[#10b981]/10 px-2.5 py-1 text-[10px] font-bold text-[#10b981] dark:bg-[#10b981]/20 dark:text-[#34d399]">
+                        {article.category}
+                      </span>
+                    </div>
+                    <h3 className="mb-2 text-base font-bold text-[#0f172a] transition-colors group-hover:text-[#2563eb] dark:text-white dark:group-hover:text-[#818cf8]">
+                      {article.title}
+                    </h3>
+                    <p className="mb-4 flex-1 text-sm text-[#64748b] dark:text-gray-400">
+                      {article.excerpt}
+                    </p>
+                    <div className="flex items-center justify-between text-xs text-[#94a3b8] dark:text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {article.readTime}
+                      </span>
+                      <span className="flex items-center gap-1 font-semibold text-[#2563eb] transition-all group-hover:gap-2 dark:text-[#818cf8]">
+                        Read More
+                        <ArrowRight className="h-3 w-3" />
+                      </span>
+                    </div>
                   </div>
-
-                  <button className="flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80">
-                    Read More
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </button>
                 </div>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </div>

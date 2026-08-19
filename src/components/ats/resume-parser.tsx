@@ -1,19 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import {
   Upload,
   FileText,
   Check,
   Edit3,
-  Save,
   X,
-  AlertCircle,
   Briefcase,
   GraduationCap,
   Wrench,
-  Star,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"

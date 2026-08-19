@@ -13,7 +13,7 @@ type ToastProps = {
   }
 }
 
-function toast({ title, description, variant = "default", action }: ToastProps) {
+function toast({ title, description, action }: ToastProps) {
   return sonnerToast(title, {
     description,
     action: action
@@ -31,7 +31,7 @@ function toast({ title, description, variant = "default", action }: ToastProps) 
 function Toaster({ className, ...props }: React.ComponentProps<typeof Sonner>) {
   return (
     <Sonner
-      className="toaster group"
+      className={cn("toaster group", className)}
       toastOptions={{
         classNames: {
           toast:
@@ -43,7 +43,6 @@ function Toaster({ className, ...props }: React.ComponentProps<typeof Sonner>) {
             "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
         },
       }}
-      className={className}
       {...props}
     />
   )

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 import { updateJobSchema } from "@/lib/validations/job";
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -84,6 +85,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const { skills, ...updateData } = parsed.data;
+    void skills;
 
     const updated = await prisma.job.update({
       where: { id },
@@ -93,9 +95,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         salaryMax: updateData.salaryRange?.max,
         status: updateData.status?.toUpperCase(),
         workMode: updateData.isRemote !== undefined
-          ? updateData.isRemote ? "REMOTE" : "ONSITE"
+          ? (updateData.isRemote ? "REMOTE" : "ONSITE") as "ONSITE" | "REMOTE" | "HYBRID"
           : undefined,
-      },
+      } as Prisma.JobUncheckedUpdateInput,
     });
 
     return NextResponse.json({ data: updated });

@@ -2,33 +2,32 @@
 
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
-import { Brain, FileCheck, Search, MessageCircle, Sparkles } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Sparkles, Target, BarChart3, Zap } from "lucide-react"
 
 const features = [
   {
-    icon: Brain,
-    title: "AI Job Matching",
-    description: "Our AI analyzes your skills, experience, and preferences to find the perfect job matches with 95% accuracy.",
-    color: "from-violet-500 to-purple-500",
+    title: "Smart Job Matching",
+    description: "Our AI analyzes your skills, experience, and preferences to match you with the most relevant opportunities.",
+    icon: Target,
+    color: "from-[#2563eb] to-[#3b82f6]",
   },
   {
-    icon: FileCheck,
-    title: "Resume Scoring",
+    title: "Resume Score",
     description: "Get instant feedback on your resume with AI-powered scoring and actionable improvement suggestions.",
-    color: "from-blue-500 to-cyan-400",
+    icon: BarChart3,
+    color: "from-[#7c3aed] to-[#a855f7]",
   },
   {
-    icon: Search,
-    title: "Smart Search",
-    description: "Natural language search that understands context and intent, delivering relevant results faster.",
-    color: "from-emerald-500 to-teal-400",
+    title: "Skill Gap Analysis",
+    description: "Identify skills you need to develop for your target role and get personalized learning recommendations.",
+    icon: Sparkles,
+    color: "from-[#10b981] to-[#34d399]",
   },
   {
-    icon: MessageCircle,
-    title: "Career Coaching",
-    description: "24/7 AI career coach providing personalized guidance, interview prep, and negotiation strategies.",
-    color: "from-orange-500 to-amber-400",
+    title: "Career Insights",
+    description: "Access real-time market data on salary ranges, in-demand skills, and hiring trends across industries.",
+    icon: Zap,
+    color: "from-[#f59e0b] to-[#fbbf24]",
   },
 ]
 
@@ -37,32 +36,30 @@ export function AiFeatures() {
   const inView = useInView(ref, { once: true, margin: "-100px" })
 
   return (
-    <section ref={ref} className="relative py-24">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5" />
-
-      <div className="relative mx-auto max-w-7xl px-4">
+    <section ref={ref} className="relative py-24 bg-[#f8fafc] dark:bg-[#0a0a0f]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
+          className="mb-12 text-center"
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary backdrop-blur-sm">
-            <Sparkles className="h-4 w-4" />
-            Powered by AI
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#7c3aed]/20 bg-[#7c3aed]/5 px-4 py-1.5 text-sm font-semibold text-[#7c3aed] dark:border-[#a78bfa]/20 dark:bg-[#a78bfa]/10 dark:text-[#a78bfa]">
+            <Sparkles className="h-3.5 w-3.5" />
+            AI Powered
           </div>
-          <h2 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">
-            Powered by{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Artificial Intelligence
+          <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-[#0f172a] sm:text-4xl dark:text-white">
+            Intelligent{" "}
+            <span className="bg-gradient-to-r from-[#7c3aed] to-[#2563eb] bg-clip-text text-transparent">
+              Career Tools
             </span>
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            Cutting-edge AI technology that revolutionizes your job search experience
+          <p className="text-lg text-[#64748b] dark:text-gray-400">
+            AI-powered features to accelerate your career growth
           </p>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, i) => {
             const Icon = feature.icon
             return (
@@ -70,19 +67,18 @@ export function AiFeatures() {
                 key={i}
                 initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: i * 0.15 }}
-                className="group"
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="group rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-white/10 dark:bg-[#111118]"
               >
-                <div className="relative h-full overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-8 backdrop-blur-xl shadow-xl transition-all duration-300 hover:bg-white/15 hover:shadow-2xl dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/8">
-                  <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br opacity-10 blur-3xl group-hover:opacity-20" style={{ backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))` }} />
-
-                  <div className={cn("mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-lg", feature.color)}>
-                    <Icon className="h-7 w-7" />
-                  </div>
-
-                  <h3 className="mb-3 text-xl font-semibold text-foreground">{feature.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
+                <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.color} text-white shadow-md transition-transform duration-300 group-hover:scale-110`}>
+                  <Icon className="h-5 w-5" />
                 </div>
+                <h3 className="mb-2 text-base font-bold text-[#0f172a] dark:text-white">
+                  {feature.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-[#64748b] dark:text-gray-400">
+                  {feature.description}
+                </p>
               </motion.div>
             )
           })}

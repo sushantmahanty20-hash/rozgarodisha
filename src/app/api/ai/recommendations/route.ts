@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -30,18 +31,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const skillNames: string[] = (profile.seekerSkills as any[]).map(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (s: any) => s.skill.name
-    );
-    const experienceTitles: string[] = (profile.experiences as any[]).map(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (e: any) => e.title
+    const skillNames: string[] = profile.seekerSkills.map(
+      (s) => s.skill.name
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: any = {
+    const where: Prisma.JobWhereInput = {
       status: "PUBLISHED",
       ...(skillNames.length > 0
         ? {
@@ -70,12 +64,9 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const recommended = jobs.map((job: any) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const jobSkillNames: string[] = (job.jobSkills as any[]).map(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (js: any) => js.skill.name
+    const recommended = jobs.map((job) => {
+      const jobSkillNames: string[] = job.jobSkills.map(
+        (js) => js.skill.name
       );
       const matchingSkills = skillNames.filter((s: string) =>
         jobSkillNames.includes(s)
@@ -105,7 +96,7 @@ export async function GET(request: NextRequest) {
       };
     });
 
-    recommended.sort((a: { matchScore: number }, b: { matchScore: number }) => b.matchScore - a.matchScore);
+    recommended.sort((a, b) => b.matchScore - a.matchScore);
 
     return NextResponse.json({
       data: recommended,

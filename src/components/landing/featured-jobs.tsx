@@ -1,72 +1,88 @@
 "use client"
 
 import { useRef } from "react"
+import Link from "next/link"
 import { motion, useInView } from "framer-motion"
-import { MapPin, Clock, Bookmark, ArrowRight, Zap } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { MapPin, Clock, Bookmark, ArrowRight, Star, IndianRupee, Briefcase } from "lucide-react"
 
 const jobs = [
   {
-    title: "Senior Frontend Developer",
-    company: "TechCorp Inc.",
-    logo: "TC",
-    location: "San Francisco, CA",
-    salary: "$120K - $180K",
-    tags: ["Remote", "Urgent"],
+    title: "Senior React Developer",
+    company: "TechNova Solutions",
+    logo: "T",
+    location: "Bengaluru, Karnataka",
+    salary: "18L - 28L PA",
+    type: "Full Time",
+    mode: "Hybrid",
     posted: "2h ago",
-    color: "from-blue-500 to-purple-500",
+    skills: ["React", "TypeScript", "Node.js"],
+    featured: true,
+    color: "from-[#2563eb] to-[#3b82f6]",
   },
   {
-    title: "Product Designer",
-    company: "DesignLab",
-    logo: "DL",
-    location: "New York, NY",
-    salary: "$90K - $130K",
-    tags: ["Hybrid"],
+    title: "Product Manager",
+    company: "FinEdge Capital",
+    logo: "F",
+    location: "Mumbai, Maharashtra",
+    salary: "20L - 32L PA",
+    type: "Full Time",
+    mode: "Onsite",
     posted: "5h ago",
-    color: "from-pink-500 to-rose-500",
+    skills: ["Strategy", "Analytics", "Agile"],
+    featured: true,
+    color: "from-[#7c3aed] to-[#a855f7]",
   },
   {
-    title: "AI/ML Engineer",
-    company: "NeuralTech",
-    logo: "NT",
-    location: "Remote",
-    salary: "$150K - $220K",
-    tags: ["Remote", "Hot"],
+    title: "UX Designer",
+    company: "Vertex Labs",
+    logo: "V",
+    location: "Hyderabad, Telangana",
+    salary: "12L - 20L PA",
+    type: "Full Time",
+    mode: "Hybrid",
     posted: "1d ago",
-    color: "from-emerald-500 to-teal-500",
+    skills: ["Figma", "UI/UX", "Prototyping"],
+    featured: false,
+    color: "from-[#06b6d4] to-[#22d3ee]",
   },
   {
-    title: "DevOps Lead",
-    company: "CloudScale",
-    logo: "CS",
-    location: "Austin, TX",
-    salary: "$140K - $190K",
-    tags: ["On-site"],
+    title: "DevOps Engineer",
+    company: "CloudCore Systems",
+    logo: "C",
+    location: "Remote",
+    salary: "16L - 26L PA",
+    type: "Full Time",
+    mode: "Remote",
     posted: "3h ago",
-    color: "from-orange-500 to-amber-500",
+    skills: ["AWS", "Kubernetes", "Docker"],
+    featured: true,
+    color: "from-[#f59e0b] to-[#fbbf24]",
+  },
+  {
+    title: "Data Scientist",
+    company: "Vertex Labs",
+    logo: "V",
+    location: "Pune, Maharashtra",
+    salary: "22L - 35L PA",
+    type: "Full Time",
+    mode: "Hybrid",
+    posted: "12h ago",
+    skills: ["Python", "ML", "TensorFlow"],
+    featured: false,
+    color: "from-[#10b981] to-[#34d399]",
   },
   {
     title: "Full Stack Developer",
-    company: "StartupHub",
-    logo: "SH",
-    location: "Remote",
-    salary: "$100K - $150K",
-    tags: ["Remote"],
-    posted: "12h ago",
-    color: "from-violet-500 to-indigo-500",
-  },
-  {
-    title: "UX Researcher",
-    company: "UserFirst",
-    logo: "UF",
-    location: "Seattle, WA",
-    salary: "$95K - $140K",
-    tags: ["Hybrid", "Urgent"],
+    company: "BrightWorks Studio",
+    logo: "B",
+    location: "Gurugram, Haryana",
+    salary: "12L - 20L PA",
+    type: "Full Time",
+    mode: "Remote",
     posted: "6h ago",
-    color: "from-cyan-500 to-blue-500",
+    skills: ["Next.js", "React", "PostgreSQL"],
+    featured: false,
+    color: "from-[#ec4899] to-[#f472b6]",
   },
 ]
 
@@ -75,23 +91,23 @@ export function FeaturedJobs() {
   const inView = useInView(ref, { once: true, margin: "-100px" })
 
   return (
-    <section ref={ref} className="relative py-24">
-      <div className="mx-auto max-w-7xl px-4">
+    <section ref={ref} className="relative py-24 bg-[#f8fafc] dark:bg-[#0a0a0f]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <Badge variant="info" size="lg" className="mb-4">
-            <Zap className="mr-1 h-3 w-3" />
-            Trending
-          </Badge>
-          <h2 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">
-            Featured <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Jobs</span>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#2563eb]/20 bg-[#2563eb]/5 px-4 py-1.5 text-sm font-semibold text-[#2563eb] dark:border-[#818cf8]/20 dark:bg-[#818cf8]/10 dark:text-[#818cf8]">
+            <Star className="h-3.5 w-3.5" />
+            Featured
+          </div>
+          <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-[#0f172a] sm:text-4xl dark:text-white">
+            Featured <span className="bg-gradient-to-r from-[#2563eb] to-[#7c3aed] bg-clip-text text-transparent">Jobs</span>
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Hand-picked opportunities from top companies
+          <p className="text-lg text-[#64748b] dark:text-gray-400">
+            Hand-picked opportunities from India&apos;s top companies
           </p>
         </motion.div>
 
@@ -103,52 +119,66 @@ export function FeaturedJobs() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.1 }}
             >
-              <div className="group relative h-full rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-xl shadow-xl transition-all duration-300 hover:bg-white/15 hover:shadow-2xl hover:-translate-y-1 dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/8">
-                <div className="mb-4 flex items-start justify-between">
-                  <div className={cn("flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br text-sm font-bold text-white shadow-lg", job.color)}>
-                    {job.logo}
+              <Link href={`/jobs/${job.title.toLowerCase().replace(/\s+/g, "-")}`}>
+                <div className="group relative flex h-full flex-col rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-[#111118] dark:hover:bg-[#161625]">
+                  {job.featured && (
+                    <div className="absolute -top-px left-6 right-6 h-0.5 bg-gradient-to-r from-[#2563eb] to-[#7c3aed]" />
+                  )}
+                  <div className="mb-4 flex items-start justify-between">
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${job.color} text-sm font-bold text-white shadow-lg`}>
+                      {job.logo}
+                    </div>
+                    <button className="rounded-lg p-2 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#2563eb] dark:hover:bg-white/5 dark:hover:text-[#818cf8]" onClick={(e) => e.preventDefault()}>
+                      <Bookmark className="h-4 w-4" />
+                    </button>
                   </div>
-                  <button className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground">
-                    <Bookmark className="h-4 w-4" />
-                  </button>
-                </div>
 
-                <h3 className="mb-1 text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
-                  {job.title}
-                </h3>
-                <p className="mb-3 text-sm font-medium text-muted-foreground">{job.company}</p>
+                  <h3 className="mb-1 text-lg font-bold text-[#0f172a] transition-colors group-hover:text-[#2563eb] dark:text-white dark:group-hover:text-[#818cf8]">
+                    {job.title}
+                  </h3>
+                  <p className="mb-3 text-sm font-medium text-[#64748b] dark:text-gray-400">{job.company}</p>
 
-                <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <MapPin className="h-3.5 w-3.5" />
-                    {job.location}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5" />
-                    {job.posted}
-                  </span>
-                </div>
+                  <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-[#64748b] dark:text-gray-400">
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {job.location}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3.5 w-3.5" />
+                      {job.posted}
+                    </span>
+                  </div>
 
-                <div className="mb-4 flex flex-wrap gap-2">
-                  {job.tags.map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant={tag === "Urgent" || tag === "Hot" ? "destructive" : tag === "Remote" ? "success" : "secondary"}
-                      size="sm"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+                  <div className="mb-4 flex flex-wrap gap-1.5">
+                    {job.skills.map((skill) => (
+                      <span key={skill} className="rounded-full bg-[#f1f5f9] px-2.5 py-1 text-[10px] font-semibold text-[#475569] dark:bg-white/5 dark:text-gray-400">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
 
-                <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                  <p className="text-sm font-semibold text-foreground">{job.salary}</p>
-                  <Button variant="ghost" size="sm" className="group/btn">
-                    Apply
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/btn:translate-x-0.5" />
-                  </Button>
+                  <div className="mt-auto flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#10b981]/10 px-2.5 py-1 text-[10px] font-bold text-[#10b981]">
+                      <Briefcase className="h-3 w-3" />
+                      {job.type}
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#2563eb]/10 px-2.5 py-1 text-[10px] font-bold text-[#2563eb] dark:bg-[#818cf8]/10 dark:text-[#818cf8]">
+                      {job.mode}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between border-t border-[#f1f5f9] pt-4 dark:border-white/5">
+                    <p className="flex items-center gap-1 text-sm font-bold text-[#0f172a] dark:text-white">
+                      <IndianRupee className="h-3.5 w-3.5" />
+                      {job.salary}
+                    </p>
+                    <span className="flex items-center gap-1 text-sm font-semibold text-[#2563eb] transition-all group-hover:gap-2 dark:text-[#818cf8]">
+                      View Job
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </div>
@@ -159,10 +189,13 @@ export function FeaturedJobs() {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="mt-12 text-center"
         >
-          <Button variant="gradient" size="lg">
+          <Link
+            href="/jobs"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#2563eb] to-[#7c3aed] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#2563eb]/25 transition-all hover:shadow-xl hover:shadow-[#2563eb]/30"
+          >
             View All Jobs
             <ArrowRight className="h-4 w-4" />
-          </Button>
+          </Link>
         </motion.div>
       </div>
     </section>

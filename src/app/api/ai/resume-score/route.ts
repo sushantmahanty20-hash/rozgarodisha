@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { resumeText, jobId } = parsed.data;
+    const { resumeText } = parsed.data;
 
     const sections = {
       hasContact: /[\w.-]+@[\w.-]+\.\w+/.test(resumeText),

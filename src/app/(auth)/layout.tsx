@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Briefcase, Sparkles, Shield, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const features = [
   {
@@ -33,8 +31,6 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-
   return (
     <div className="flex min-h-screen">
       {/* Left: Decorative Panel */}

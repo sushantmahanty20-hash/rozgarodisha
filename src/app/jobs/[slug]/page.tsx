@@ -68,8 +68,7 @@ const jobData = {
   skills: ["React", "TypeScript", "Node.js", "GraphQL", "AWS"],
 };
 
-export default async function JobDetailPage({ params }: PageProps) {
-  const { slug } = await params;
+export default async function JobDetailPage() {
   const job = jobData;
 
   return (

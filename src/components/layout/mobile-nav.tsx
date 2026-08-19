@@ -76,6 +76,8 @@ export function MobileNav({
   }, [open])
 
   React.useEffect(() => {
+    // Collapse expanded menu sections on route change
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setExpanded(null)
   }, [pathname])
 
@@ -237,12 +239,12 @@ export function MobileNav({
               ) : (
                 <div className="flex gap-3">
                   <Button variant="outline" className="flex-1" asChild>
-                    <Link href="/auth/signin" onClick={onClose}>
+                    <Link href="/login" onClick={onClose}>
                       Sign In
                     </Link>
                   </Button>
                   <Button variant="gradient" className="flex-1" asChild>
-                    <Link href="/auth/signup" onClick={onClose}>
+                    <Link href="/register" onClick={onClose}>
                       Create Account
                     </Link>
                   </Button>

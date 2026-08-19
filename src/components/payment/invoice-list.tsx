@@ -12,11 +12,10 @@ import {
   Receipt,
 } from "lucide-react"
 import { cn, formatDate } from "@/lib/utils"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
 
 interface Invoice {
   id: string

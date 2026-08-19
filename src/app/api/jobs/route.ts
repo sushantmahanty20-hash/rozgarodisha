@@ -139,6 +139,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { skills, ...jobData } = parsed.data;
+    void skills;
 
     let slug = slugify(jobData.title);
     const existingSlug = await prisma.job.findUnique({ where: { slug } });
@@ -146,17 +147,31 @@ export async function POST(request: NextRequest) {
       slug = slug + "-" + Date.now().toString(36);
     }
 
+    const employmentTypeMap: Record<string, string> = {
+      "full-time": "FULL_TIME",
+      "part-time": "PART_TIME",
+      contract: "CONTRACT",
+      internship: "INTERNSHIP",
+      freelance: "FREELANCE",
+    };
+
     const job = await prisma.job.create({
       data: {
-        ...jobData,
+        title: jobData.title,
+        description: jobData.description,
+        requirements: jobData.requirements,
+        responsibilities: jobData.responsibilities,
         slug,
         salaryMin: jobData.salaryRange?.min,
         salaryMax: jobData.salaryRange?.max,
         salaryCurrency: jobData.salaryRange?.currency || "USD",
-        salaryPeriod: jobData.salaryRange?.period?.toUpperCase() || "MONTHLY",
+        salaryPeriod: (jobData.salaryRange?.period?.toUpperCase() || "MONTHLY") as "HOURLY" | "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY",
         workMode: jobData.isRemote ? "REMOTE" : "ONSITE",
+        employmentType: employmentTypeMap[jobData.employmentType] as "FULL_TIME" | "PART_TIME" | "CONTRACT" | "INTERNSHIP" | "FREELANCE",
+        applicationDeadline: jobData.applicationDeadline,
         postedBy: session.user.id,
         companyId: jobData.companyId,
+        categoryId: jobData.categoryId,
         status: jobData.status === "published" ? "PUBLISHED" : "DRAFT",
       },
     });

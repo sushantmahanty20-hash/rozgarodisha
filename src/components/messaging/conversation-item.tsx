@@ -26,7 +26,6 @@ function ConversationItem({
   conversation,
   isActive,
   onClick,
-  className,
 }: ConversationItemProps) {
   return (
     <motion.button

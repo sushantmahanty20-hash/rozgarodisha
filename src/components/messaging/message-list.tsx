@@ -125,7 +125,7 @@ function TypingIndicator() {
   )
 }
 
-function MessageList({ messages, currentUserId, className }: MessageListProps) {
+function MessageList({ messages, currentUserId }: MessageListProps) {
   const endRef = React.useRef<HTMLDivElement>(null)
   const [isTyping] = React.useState(false)
   const grouped = groupByDate(messages)

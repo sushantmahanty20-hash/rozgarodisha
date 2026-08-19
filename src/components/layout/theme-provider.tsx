@@ -8,29 +8,6 @@ const themes = ["light", "dark", "neo-dark", "neo-emerald", "neo-blue", "neo-pur
 
 export type Theme = (typeof themes)[number]
 
-function applyThemeClass(theme: string) {
-  if (typeof document === "undefined") return
-  const root = document.documentElement
-
-  // Remove all theme classes
-  themes.forEach((t) => root.classList.remove(t))
-
-  // Determine if dark variant
-  const isDark = theme.startsWith("neo-") || theme === "dark"
-  if (isDark) {
-    root.classList.add("dark")
-  } else {
-    root.classList.remove("dark")
-  }
-
-  // Apply neo theme modifier
-  if (theme.startsWith("neo-")) {
-    root.classList.add(theme)
-  }
-
-  root.classList.add(theme)
-}
-
 export function ThemeProvider({
   children,
   ...props

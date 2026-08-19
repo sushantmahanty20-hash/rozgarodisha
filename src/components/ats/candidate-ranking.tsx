@@ -4,16 +4,13 @@ import * as React from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   ChevronDown,
-  ChevronUp,
-  Star,
-  Briefcase,
   GraduationCap,
   Wrench,
   ArrowUpDown,
   Check,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"

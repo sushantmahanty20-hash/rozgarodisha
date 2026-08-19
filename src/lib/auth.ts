@@ -48,49 +48,54 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password are required");
-        }
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            throw new Error("Email and password are required");
+          }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email.toLowerCase().trim() },
-        });
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email.toLowerCase().trim() },
+          });
 
-        if (!user) {
-          throw new Error("No account found with this email");
-        }
+          if (!user) {
+            throw new Error("No account found with this email");
+          }
 
-        if (user.status !== "ACTIVE") {
-          throw new Error("Account is not active. Please contact support.");
-        }
+          if (user.status !== "ACTIVE") {
+            throw new Error("Account is not active. Please contact support.");
+          }
 
-        if (!user.password) {
-          throw new Error(
-            "This account uses social login. Please sign in with your provider."
+          if (!user.password) {
+            throw new Error(
+              "This account uses social login. Please sign in with your provider."
+            );
+          }
+
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.password
           );
+
+          if (!isPasswordValid) {
+            throw new Error("Invalid password");
+          }
+
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { lastLoginAt: new Date() },
+          });
+
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            emailVerified: user.emailVerified,
+          };
+        } catch (error) {
+          console.error("[AUTH] authorize error:", error);
+          throw error;
         }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-
-        if (!isPasswordValid) {
-          throw new Error("Invalid password");
-        }
-
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { lastLoginAt: new Date() },
-        });
-
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          emailVerified: user.emailVerified,
-        };
       },
     }),
     GoogleProvider({

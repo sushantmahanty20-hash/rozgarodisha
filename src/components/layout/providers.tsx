@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { SessionProvider } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -37,26 +38,28 @@ export function Providers({ children }: ProvidersProps) {
   const queryClient = React.useMemo(() => getQueryClient(), [])
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem
-        disableTransitionOnChange={false}
-      >
-        <TooltipProvider delayDuration={300}>
-          {children}
-        </TooltipProvider>
-        <Toaster
-          position="top-right"
-          richColors
-          closeButton
-          duration={4000}
-          toastOptions={{
-            className: "rounded-xl border bg-background shadow-xl",
-          }}
-        />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <SessionProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <TooltipProvider delayDuration={300}>
+            {children}
+          </TooltipProvider>
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
+            duration={4000}
+            toastOptions={{
+              className: "rounded-xl border bg-background shadow-xl",
+            }}
+          />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </SessionProvider>
   )
 }

@@ -6,8 +6,6 @@ import {
   Search,
   SlidersHorizontal,
   Building2,
-  MapPin,
-  Users,
   X,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,7 +22,7 @@ const mockCompanies = [
   {
     id: "1",
     name: "TechCorp Inc.",
-    logo: null,
+    logo: undefined,
     industry: "Technology",
     employeeCount: "1,000-5,000",
     jobOpenings: 24,
@@ -35,7 +33,7 @@ const mockCompanies = [
   {
     id: "2",
     name: "StartupXYZ",
-    logo: null,
+    logo: undefined,
     industry: "FinTech",
     employeeCount: "50-200",
     jobOpenings: 12,
@@ -46,7 +44,7 @@ const mockCompanies = [
   {
     id: "3",
     name: "DesignStudio",
-    logo: null,
+    logo: undefined,
     industry: "Design",
     employeeCount: "200-500",
     jobOpenings: 8,
@@ -57,7 +55,7 @@ const mockCompanies = [
   {
     id: "4",
     name: "CloudNine",
-    logo: null,
+    logo: undefined,
     industry: "Cloud Computing",
     employeeCount: "5,000-10,000",
     jobOpenings: 35,
@@ -68,7 +66,7 @@ const mockCompanies = [
   {
     id: "5",
     name: "DataFlow AI",
-    logo: null,
+    logo: undefined,
     industry: "Artificial Intelligence",
     employeeCount: "100-500",
     jobOpenings: 18,
@@ -79,7 +77,7 @@ const mockCompanies = [
   {
     id: "6",
     name: "GreenTech Solutions",
-    logo: null,
+    logo: undefined,
     industry: "Clean Energy",
     employeeCount: "500-1,000",
     jobOpenings: 15,
@@ -90,7 +88,7 @@ const mockCompanies = [
   {
     id: "7",
     name: "HealthBridge",
-    logo: null,
+    logo: undefined,
     industry: "Healthcare",
     employeeCount: "1,000-5,000",
     jobOpenings: 22,
@@ -101,7 +99,7 @@ const mockCompanies = [
   {
     id: "8",
     name: "EduLearn",
-    logo: null,
+    logo: undefined,
     industry: "Education",
     employeeCount: "200-500",
     jobOpenings: 10,
@@ -112,7 +110,7 @@ const mockCompanies = [
   {
     id: "9",
     name: "FinServe Pro",
-    logo: null,
+    logo: undefined,
     industry: "Finance",
     employeeCount: "5,000-10,000",
     jobOpenings: 40,

@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Mail, Lock, User, Phone } from "lucide-react";
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
@@ -26,16 +26,15 @@ export default function RegisterPage() {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema) as any,
+    resolver: zodResolver(registerSchema) as Resolver<RegisterInput>,
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
       role: "jobseeker",
-      acceptTerms: false as any,
+      acceptTerms: true,
     },
   });
 

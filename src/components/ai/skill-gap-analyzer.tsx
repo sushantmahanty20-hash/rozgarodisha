@@ -3,20 +3,17 @@
 import * as React from "react"
 import { motion } from "framer-motion"
 import {
-  Layers,
   BookOpen,
   Check,
   X,
   ArrowRight,
   Target,
-  Trophy,
   AlertCircle,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
 
 interface Skill {
   name: string
@@ -41,7 +38,6 @@ interface SkillGapAnalyzerProps {
 }
 
 function SkillGapAnalyzer({
-  currentSkills = ["React", "TypeScript", "JavaScript", "HTML/CSS", "Git"],
   requiredSkills = [
     { name: "React", status: "matched", priority: "high" },
     { name: "TypeScript", status: "matched", priority: "high" },

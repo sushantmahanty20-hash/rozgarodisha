@@ -69,7 +69,7 @@ function FileUpload({
   const [error, setError] = React.useState<string | null>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  const validateFile = (file: File): string | null => {
+  const validateFile = React.useCallback((file: File): string | null => {
     if (maxSize && file.size > maxSize) {
       return `File "${file.name}" exceeds ${formatFileSize(maxSize)} limit`
     }
@@ -89,7 +89,7 @@ function FileUpload({
       }
     }
     return null
-  }
+  }, [maxSize, accept])
 
   const handleFiles = React.useCallback(
     (fileList: FileList | File[]) => {
@@ -115,7 +115,7 @@ function FileUpload({
         onFilesAdd?.(validFiles)
       }
     },
-    [files.length, maxFiles, maxSize, accept, onFilesAdd]
+    [files.length, maxFiles, onFilesAdd, validateFile]
   )
 
   const handleDragOver = (e: React.DragEvent) => {

@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
-import { FileText, Eye, X, Clock, MapPin, Calendar } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { X, Clock, MapPin } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -80,7 +79,7 @@ const statusColors: Record<string, "success" | "warning" | "info" | "secondary" 
 export default function MyApplicationsPage() {
   const [expandedId, setExpandedId] = React.useState<string | null>(null);
 
-  function handleWithdraw(id: string) {
+  function handleWithdraw() {
     toast.success("Application withdrawn");
   }
 
@@ -128,7 +127,7 @@ export default function MyApplicationsPage() {
                       variant="ghost"
                       size="sm"
                       className="text-destructive"
-                      onClick={() => handleWithdraw(app.id)}
+                      onClick={() => handleWithdraw()}
                     >
                       <X className="h-4 w-4" />
                       Withdraw

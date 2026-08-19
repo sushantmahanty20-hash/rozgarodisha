@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   XCircle,
   ExternalLink,
-  Shield,
   ShieldCheck,
   Eye,
 } from "lucide-react";
@@ -58,11 +57,11 @@ export default function AdminCompaniesPage() {
     c.industry.toLowerCase().includes(search.toLowerCase())
   );
 
-  function handleApprove(id: string) {
+  function handleApprove() {
     toast.success("Company verified");
   }
 
-  function handleReject(id: string) {
+  function handleReject() {
     toast.success("Verification rejected");
   }
 
@@ -125,11 +124,11 @@ export default function AdminCompaniesPage() {
                     </DropdownMenuItem>
                     {company.verificationStatus === "PENDING" && (
                       <>
-                        <DropdownMenuItem onClick={() => handleApprove(company.id)}>
+                        <DropdownMenuItem onClick={() => handleApprove()}>
                           <CheckCircle2 className="h-4 w-4 mr-2 text-emerald-500" />
                           Approve
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleReject(company.id)} className="text-destructive">
+                        <DropdownMenuItem onClick={() => handleReject()} className="text-destructive">
                           <XCircle className="h-4 w-4 mr-2" />
                           Reject
                         </DropdownMenuItem>

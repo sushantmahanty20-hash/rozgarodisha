@@ -5,10 +5,9 @@ import {
   MapPin,
   Clock,
   Send,
-  Twitter,
-  Linkedin,
-  Github,
-  Facebook,
+  Globe,
+  ExternalLink,
+  MessageCircle,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -49,10 +48,10 @@ const contactInfo = [
 ];
 
 const socialLinks = [
-  { name: "Twitter", icon: Twitter, href: "https://twitter.com/jobsphere" },
-  { name: "LinkedIn", icon: Linkedin, href: "https://linkedin.com/company/jobsphere" },
-  { name: "GitHub", icon: Github, href: "https://github.com/jobsphere" },
-  { name: "Facebook", icon: Facebook, href: "https://facebook.com/jobsphere" },
+  { name: "Twitter", icon: MessageCircle, href: "https://twitter.com/jobsphere" },
+  { name: "LinkedIn", icon: ExternalLink, href: "https://linkedin.com/company/jobsphere" },
+  { name: "GitHub", icon: Globe, href: "https://github.com/jobsphere" },
+  { name: "Facebook", icon: Globe, href: "https://facebook.com/jobsphere" },
 ];
 
 export default function ContactPage() {

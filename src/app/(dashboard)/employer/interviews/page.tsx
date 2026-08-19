@@ -10,13 +10,11 @@ import {
   Users,
   ChevronRight,
   CheckCircle2,
-  AlertCircle,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InterviewScheduler } from "@/components/ats/interview-scheduler";
-import { cn } from "@/lib/utils";
 
 const scheduledInterviews = [
   {
@@ -64,7 +62,7 @@ const scheduledInterviews = [
 const statusConfig: Record<string, { variant: "success" | "warning" | "info" | "secondary"; label: string }> = {
   scheduled: { variant: "info", label: "Scheduled" },
   completed: { variant: "success", label: "Completed" },
-  cancelled: { variant: "destructive" as "destructive", label: "Cancelled" },
+  cancelled: { variant: "warning", label: "Cancelled" },
 };
 
 export default function EmployerInterviewsPage() {

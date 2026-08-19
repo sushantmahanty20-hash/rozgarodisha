@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
@@ -77,6 +77,7 @@ function GlobalSearch({ className }: GlobalSearchProps) {
 
   React.useEffect(() => {
     if (!query.trim()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResults([])
       return
     }
@@ -92,6 +93,8 @@ function GlobalSearch({ className }: GlobalSearchProps) {
   }, [query])
 
   React.useEffect(() => {
+    // Reset highlighted item when result list changes
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedIndex(0)
   }, [results])
 
@@ -233,7 +236,7 @@ function GlobalSearch({ className }: GlobalSearchProps) {
                           </span>
                           <Badge variant="secondary" size="sm">{items.length}</Badge>
                         </div>
-                        {items.map((result, i) => {
+                        {items.map((result) => {
                           const globalIndex = results.indexOf(result)
                           return (
                             <button
