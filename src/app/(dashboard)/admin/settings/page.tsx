@@ -1,15 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { Save, Settings, Mail, MessageSquare, CreditCard, Bot } from "lucide-react";
+import { Save, Settings, Mail, MessageSquare, CreditCard, Bot, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ProfileSettings } from "@/components/settings/profile-form";
 import { toast } from "sonner";
 
 const tabs = [
+  { value: "profile", label: "Profile", icon: User },
   { value: "general", label: "General", icon: Settings },
   { value: "email", label: "Email", icon: Mail },
   { value: "sms", label: "SMS", icon: MessageSquare },
@@ -49,6 +51,18 @@ export default function AdminSettingsPage() {
             </TabsTrigger>
           ))}
         </TabsList>
+
+        <TabsContent value="profile">
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile Settings</CardTitle>
+              <CardDescription>Manage your account information</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ProfileSettings />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="general">
           <Card>
