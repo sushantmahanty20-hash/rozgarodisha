@@ -2,9 +2,11 @@ import type { NextAuthOptions, DefaultSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import LinkedInProvider from "next-auth/providers/linkedin";
+import AzureADProvider from "next-auth/providers/azure-ad";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { getEnabledOAuthProviders } from "@/lib/oauth-providers";
 
 declare module "next-auth" {
   interface Session {
@@ -98,13 +100,24 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-    }),
-    LinkedInProvider({
-      clientId: process.env.LINKEDIN_CLIENT_ID ?? "",
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET ?? "",
+    ...getEnabledOAuthProviders().map((provider) => {
+      if (provider === "google") {
+        return GoogleProvider({
+          clientId: process.env.GOOGLE_CLIENT_ID!,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        });
+      }
+      if (provider === "linkedin") {
+        return LinkedInProvider({
+          clientId: process.env.LINKEDIN_CLIENT_ID!,
+          clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+        });
+      }
+      return AzureADProvider({
+        clientId: process.env.AZURE_AD_CLIENT_ID!,
+        clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
+        tenantId: process.env.AZURE_AD_TENANT_ID ?? "common",
+      });
     }),
   ],
   callbacks: {
