@@ -3,6 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { signOut } from "next-auth/react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Briefcase, LayoutDashboard, FileText, Building2, Bookmark, Bell, Settings, Users,
@@ -415,7 +416,10 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
                   <p className="truncate text-sm font-semibold text-[#0f172a] dark:text-white">{user.name}</p>
                   <p className="truncate text-[11px] font-medium text-[#2563eb] dark:text-[#818cf8]">{roleLabels[role]}</p>
                 </div>
-                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#94a3b8] transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10">
+                <button
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#94a3b8] transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
+                >
                   <LogOut className="h-4 w-4" />
                 </button>
               </>

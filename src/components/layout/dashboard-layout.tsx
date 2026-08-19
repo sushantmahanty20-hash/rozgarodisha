@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { signOut } from "next-auth/react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, Search, Bell, MessageSquare, ChevronDown, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -36,26 +37,24 @@ const profileMenus: Record<UserRole, { label: string; href: string }[]> = {
   admin: [
     { label: "Admin Profile", href: "/admin/settings" },
     { label: "Security", href: "/admin/settings?tab=security" },
-    { label: "System Settings", href: "/admin/settings" },
-    { label: "Activity Log", href: "/admin/analytics" },
+    { label: "Users", href: "/admin/users" },
+    { label: "Dashboard", href: "/admin" },
   ],
   employer: [
     { label: "Company Profile", href: "/employer/company" },
-    { label: "Account", href: "/employer/settings" },
-    { label: "Subscription", href: "/employer/subscription" },
-    { label: "Billing", href: "/employer/billing" },
-    { label: "Settings", href: "/employer/settings" },
+    { label: "My Jobs", href: "/employer/jobs" },
+    { label: "Applications", href: "/employer/applications" },
+    { label: "Interviews", href: "/employer/interviews" },
   ],
   recruiter: [
     { label: "Company Profile", href: "/employer/company" },
-    { label: "Account", href: "/employer/settings" },
-    { label: "Settings", href: "/employer/settings" },
+    { label: "My Jobs", href: "/employer/jobs" },
   ],
   jobseeker: [
     { label: "My Profile", href: "/job-seeker/profile" },
     { label: "My Resume", href: "/job-seeker/resume" },
     { label: "Applications", href: "/job-seeker/applications" },
-    { label: "Settings", href: "/job-seeker/settings" },
+    { label: "Saved Jobs", href: "/job-seeker/saved-jobs" },
   ],
 }
 
@@ -161,7 +160,10 @@ export function DashboardLayout({ children, user, header, className }: Dashboard
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-500 focus:text-red-500">
+          <DropdownMenuItem
+            className="text-red-500 focus:text-red-500"
+            onClick={() => signOut({ callbackUrl: "/login" })}
+          >
             <LogOut className="mr-2 h-4 w-4" />
             Logout
           </DropdownMenuItem>

@@ -1,5 +1,6 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
+import { panelHrefForRole } from "@/lib/roles";
 
 export default withAuth(
   function middleware(req) {
@@ -13,10 +14,11 @@ export default withAuth(
     }
 
     const role = token.role as string;
+    const home = panelHrefForRole(role);
 
     if (pathname.startsWith("/admin")) {
       if (role !== "ADMIN" && role !== "SUPER_ADMIN") {
-        return NextResponse.redirect(new URL("/", req.url));
+        return NextResponse.redirect(new URL(home, req.url));
       }
     }
 
@@ -28,13 +30,13 @@ export default withAuth(
         role !== "ADMIN" &&
         role !== "SUPER_ADMIN"
       ) {
-        return NextResponse.redirect(new URL("/", req.url));
+        return NextResponse.redirect(new URL(home, req.url));
       }
     }
 
     if (pathname.startsWith("/job-seeker")) {
       if (role !== "JOB_SEEKER" && role !== "ADMIN" && role !== "SUPER_ADMIN") {
-        return NextResponse.redirect(new URL("/", req.url));
+        return NextResponse.redirect(new URL(home, req.url));
       }
     }
 

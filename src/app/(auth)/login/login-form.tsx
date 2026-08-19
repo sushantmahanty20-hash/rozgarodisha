@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
@@ -67,8 +67,17 @@ export function LoginForm({ oauthProviders }: { oauthProviders: OAuthProvider[] 
         return;
       }
 
+      const session = await getSession();
+      const role = session?.user?.role;
+
+      if (role === "ADMIN" || role === "SUPER_ADMIN") {
+        router.push("/admin");
+      } else if (role === "EMPLOYER" || role === "HR_MANAGER" || role === "RECRUITER") {
+        router.push("/employer");
+      } else {
+        router.push("/job-seeker");
+      }
       toast.success("Welcome back!");
-      router.push("/job-seeker");
     } catch {
       toast.error(AUTH_ERRORS.Default);
     } finally {

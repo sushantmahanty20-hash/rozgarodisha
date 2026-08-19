@@ -1,13 +1,26 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import { normalizeRole } from "@/lib/roles";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await getServerSession(authOptions);
+
   return (
     <DashboardLayout
-      user={{
-        name: "Rajesh Kumar",
-        email: "admin@jobportal.demo",
-        role: "admin",
-      }}
+      user={
+        session?.user
+          ? {
+              name: session.user.name ?? "Admin",
+              email: session.user.email ?? "",
+              role: normalizeRole(session.user.role),
+            }
+          : undefined
+      }
     >
       {children}
     </DashboardLayout>
