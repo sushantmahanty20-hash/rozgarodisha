@@ -51,6 +51,10 @@ model User {
   subscriptions              Subscription[]
   successStories             SuccessStory[]
   companyEmployees           Company[]                 @relation("CompanyEmployee")
+  recruiterProfile           RecruiterProfile?         @relation("RecruiterOwner")
+  recruiterCandidates        RecruiterCandidate[]      @relation("RecruiterCandidateCreator")
+  recruiterTeamMembers       RecruiterTeamMember[]     @relation("RecruiterTeamMemberUser")
+  recruiterDocuments         RecruiterDocument[]       @relation("RecruiterDocumentUploader")
 
   @@index([email])
   @@index([phone])
@@ -799,6 +803,685 @@ model FeatureFlag {
   @@map("feature_flags")
 }
 
+model RecruiterProfile {
+  id                 String                  @id @default(cuid())
+  userId             String                  @unique
+  agencyName         String
+  slug               String                  @unique
+  agencyType         AgencyType              @default(RECRUITMENT_CONSULTANCY)
+  about              String?
+  logo               String?
+  website            String?
+  businessEmail      String?
+  businessPhone      String?
+  officeAddress      String?
+  city               String?
+  state              String?
+  country            String?
+  zipCode            String?
+  yearEstablished    Int?
+  numEmployees       Int?
+  numRecruiters      Int?
+  industriesServed   String?
+  specializations    String?
+  geographicCoverage GeographicCoverage      @default(LOCAL)
+  registrationNumber String?
+  gstin              String?
+  panNumber          String?
+  recruitmentLicense String?
+  verificationStatus AgencyVerificationStatus @default(PENDING)
+  verificationNote   String?
+  verifiedAt         DateTime?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  user               User                    @relation("RecruiterOwner", fields: [userId], references: [id], onDelete: Cascade)
+  clients            RecruiterClient[]
+  requirements       RecruitmentRequirement[]
+  candidates         RecruiterCandidate[]
+  submissions        CandidateSubmission[]
+  teamMembers        RecruiterTeamMember[]
+  documents          RecruiterDocument[]
+  placements         RecruiterPlacement[]
+  fees               RecruitmentFee[]
+  invoices           RecruiterInvoice[]
+  interviews         RecruiterInterview[]
+  offers             RecruiterOffer[]
+  reviews            RecruiterReview[]
+  payments           RecruiterPayment[]
+
+  @@index([userId])
+  @@index([verificationStatus])
+  @@index([slug])
+  @@map("recruiter_profiles")
+}
+
+model RecruiterTeamMember {
+  id                 String          @id @default(cuid())
+  recruiterProfileId String
+  userId             String?
+  name               String
+  email              String
+  phone              String?
+  designation        String
+  role               TeamRole         @default(RECRUITER)
+  permissions        Json?
+  isActive           Boolean         @default(true)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  recruiterProfile   RecruiterProfile @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  user               User?            @relation("RecruiterTeamMemberUser", fields: [userId], references: [id])
+
+  @@index([recruiterProfileId])
+  @@map("recruiter_team_members")
+}
+
+model RecruiterClient {
+  id                    String                 @id @default(cuid())
+  recruiterProfileId    String
+  companyName           String
+  industry              String?
+  companySize           String?
+  website               String?
+  address               String?
+  contactPerson         String?
+  designation           String?
+  email                 String?
+  phone                 String?
+  whatsapp              String?
+  gstin                 String?
+  contractStartDate     DateTime?
+  contractEndDate       DateTime?
+  agreementUrl          String?
+  paymentTerms          String?
+  replacementPeriodDays Int?
+  feeType               FeeType?
+  feeValue              Decimal?               @db.Decimal(12, 2)
+  status                ClientStatus           @default(ACTIVE)
+  relationshipStartDate DateTime?
+  notes                 String?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  recruiterProfile      RecruiterProfile       @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  contacts              RecruiterClientContact[]
+  requirements          RecruitmentRequirement[]
+  submissions           CandidateSubmission[]
+  interviews            RecruiterInterview[]
+  offers                RecruiterOffer[]
+  placements            RecruiterPlacement[]
+  fees                  RecruitmentFee[]
+  invoices              RecruiterInvoice[]
+  payments              RecruiterPayment[]
+  documents             RecruiterDocument[]
+  reviews               RecruiterReview[]
+
+  @@index([recruiterProfileId])
+  @@index([status])
+  @@map("recruiter_clients")
+}
+
+model RecruiterClientContact {
+  id        String         @id @default(cuid())
+  clientId  String
+  name      String
+  designation String?
+  email     String?
+  phone     String?
+  isPrimary Boolean        @default(false)
+  client    RecruiterClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@map("recruiter_client_contacts")
+}
+
+model RecruitmentRequirement {
+  id                 String              @id @default(cuid())
+  recruiterProfileId String
+  clientId           String
+  title              String
+  openings           Int                 @default(1)
+  description        String?
+  responsibilities   String?
+  requiredSkills     String?
+  preferredSkills    String?
+  experienceMin      Int?
+  experienceMax      Int?
+  education          String?
+  salaryMin          Decimal?            @db.Decimal(12, 2)
+  salaryMax          Decimal?            @db.Decimal(12, 2)
+  salaryCurrency     String              @default("INR")
+  location           String?
+  workMode           WorkMode?
+  employmentType     EmploymentType?
+  shift              String?
+  noticePeriod       String?
+  travelRequired     Boolean             @default(false)
+  joiningDeadline    DateTime?
+  priority           RequirementPriority @default(MEDIUM)
+  clientContactId    String?
+  recruiterAssignedId String?
+  status             RequirementStatus   @default(OPEN)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  recruiterProfile   RecruiterProfile    @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  client             RecruiterClient     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  submissions        CandidateSubmission[]
+  interviews         RecruiterInterview[]
+  offers             RecruiterOffer[]
+  placements         RecruiterPlacement[]
+  fees               RecruitmentFee[]
+
+  @@index([recruiterProfileId])
+  @@index([clientId])
+  @@index([status])
+  @@map("recruitment_requirements")
+}
+
+model RecruiterCandidate {
+  id                 String               @id @default(cuid())
+  recruiterProfileId String
+  createdBy          String?
+  name               String
+  phone              String?
+  email              String?
+  location           String?
+  currentTitle       String?
+  totalExperienceYrs Decimal?             @db.Decimal(5, 2)
+  skills             String?
+  education          String?
+  expectedSalary     Decimal?             @db.Decimal(12, 2)
+  currentSalary      Decimal?             @db.Decimal(12, 2)
+  noticePeriod       String?
+  preferredLocation  String?
+  resumeUrl          String?
+  source             CandidateSource      @default(AGENCY_DATABASE)
+  sourceDetail       String?
+  status             String               @default("AVAILABLE")
+  availability       String?
+  lastContactedAt    DateTime?
+  consentStatus      CandidateConsentStatus @default(NO_CONSENT)
+  consentDate        DateTime?
+  consentPurpose     String?
+  consentExpiresAt   DateTime?
+  isMarketplaceVisible Boolean            @default(false)
+  notes              String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  recruiterProfile   RecruiterProfile     @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  creator            User?                @relation("RecruiterCandidateCreator", fields: [createdBy], references: [id])
+  submissions        CandidateSubmission[]
+  interviews         RecruiterInterview[]
+  offers             RecruiterOffer[]
+  placements         RecruiterPlacement[]
+  documents          RecruiterDocument[]
+  replacementOf      PlacementReplacement[]  @relation("PlacementReplacementCandidate")
+  feesAsCandidate    RecruitmentFee[]
+
+  @@index([recruiterProfileId])
+  @@index([email])
+  @@index([consentStatus])
+  @@map("recruiter_candidates")
+}
+
+model CandidateSubmission {
+  id                 String              @id @default(cuid())
+  recruiterProfileId String
+  clientId           String
+  requirementId      String
+  candidateId        String
+  submittedBy        String?
+  submissionDate     DateTime            @default(now())
+  expectedSalary     Decimal?            @db.Decimal(12, 2)
+  noticePeriod       String?
+  recruiterNotes     String?
+  consentStatus      CandidateConsentStatus?
+  resumeVersion      String?
+  status             SubmissionStatus    @default(SOURCED)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  recruiterProfile   RecruiterProfile    @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  client             RecruiterClient     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  requirement        RecruitmentRequirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+  candidate          RecruiterCandidate  @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  history            SubmissionStatusHistory[]
+  interviews         RecruiterInterview[]
+  offers             RecruiterOffer[]
+  placements         RecruiterPlacement[]
+  fees               RecruitmentFee[]
+
+  @@index([recruiterProfileId])
+  @@index([requirementId])
+  @@index([candidateId])
+  @@index([status])
+  @@map("candidate_submissions")
+}
+
+model SubmissionStatusHistory {
+  id           String             @id @default(cuid())
+  submissionId String
+  fromStatus   String
+  toStatus     String
+  changedBy    String?
+  reason       String?
+  createdAt    DateTime           @default(now())
+  submission   CandidateSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId])
+  @@map("submission_status_history")
+}
+
+model RecruiterInterview {
+  id                 String          @id @default(cuid())
+  recruiterProfileId String
+  clientId           String?
+  requirementId      String?
+  submissionId       String?
+  candidateId        String
+  interviewDate      DateTime
+  interviewType      InterviewType
+  location           String?
+  meetingUrl         String?
+  interviewer        String?
+  feedback           String?
+  status             InterviewStatus @default(SCHEDULED)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  recruiterProfile   RecruiterProfile @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  client             RecruiterClient? @relation(fields: [clientId], references: [id])
+  requirement        RecruitmentRequirement? @relation(fields: [requirementId], references: [id])
+  submission         CandidateSubmission? @relation(fields: [submissionId], references: [id])
+  candidate          RecruiterCandidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([recruiterProfileId])
+  @@index([status])
+  @@index([interviewDate])
+  @@map("recruiter_interviews")
+}
+
+model RecruiterOffer {
+  id                 String           @id @default(cuid())
+  recruiterProfileId String
+  clientId           String
+  requirementId      String?
+  submissionId       String?
+  candidateId        String
+  offerDate          DateTime         @default(now())
+  position           String
+  salary             Decimal?         @db.Decimal(12, 2)
+  joiningDate        DateTime?
+  status             OfferStatus      @default(PENDING)
+  notes              String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  recruiterProfile   RecruiterProfile @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  client             RecruiterClient  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  requirement        RecruitmentRequirement? @relation(fields: [requirementId], references: [id])
+  submission         CandidateSubmission? @relation(fields: [submissionId], references: [id])
+  candidate          RecruiterCandidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([recruiterProfileId])
+  @@index([status])
+  @@map("recruiter_offers")
+}
+
+model RecruiterPlacement {
+  id                  String              @id @default(cuid())
+  recruiterProfileId  String
+  clientId            String
+  requirementId       String?
+  submissionId        String?
+  candidateId         String
+  position            String
+  joiningDate         DateTime
+  salary              Decimal?            @db.Decimal(12, 2)
+  feeAmount           Decimal?            @db.Decimal(12, 2)
+  feeType             FeeType?
+  recruiterAssignedId String?
+  placementDate       DateTime            @default(now())
+  guaranteePeriodDays Int?
+  status              PlacementStatus     @default(ACTIVE)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  recruiterProfile    RecruiterProfile    @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  client              RecruiterClient     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  requirement         RecruitmentRequirement? @relation(fields: [requirementId], references: [id])
+  submission          CandidateSubmission? @relation(fields: [submissionId], references: [id])
+  candidate           RecruiterCandidate  @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  replacements        PlacementReplacement[]
+  fees                RecruitmentFee[]
+
+  @@index([recruiterProfileId])
+  @@index([status])
+  @@map("recruiter_placements")
+}
+
+model PlacementReplacement {
+  id               String             @id @default(cuid())
+  placementId      String
+  replacementCandidateId String?
+  requiredDate     DateTime?
+  status           String             @default("REQUESTED")
+  note              String?
+  createdAt        DateTime           @default(now())
+  placement        RecruiterPlacement @relation(fields: [placementId], references: [id], onDelete: Cascade)
+  replacementCandidate RecruiterCandidate? @relation("PlacementReplacementCandidate", fields: [replacementCandidateId], references: [id])
+
+  @@index([placementId])
+  @@map("placement_replacements")
+}
+
+model RecruitmentFee {
+  id                 String           @id @default(cuid())
+  recruiterProfileId String
+  clientId           String
+  requirementId      String?
+  submissionId       String?
+  placementId        String?
+  candidateId        String?
+  feeType            FeeType          @default(PERCENTAGE_OF_SALARY)
+  feeValue           Decimal?         @db.Decimal(12, 2)
+  salaryAmount       Decimal?         @db.Decimal(12, 2)
+  expectedFee        Decimal?         @db.Decimal(12, 2)
+  invoiceId          String?
+  status             FeeStatus        @default(EXPECTED)
+  dueDate            DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  recruiterProfile   RecruiterProfile @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  client             RecruiterClient  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  requirement        RecruitmentRequirement? @relation(fields: [requirementId], references: [id])
+  submission         CandidateSubmission? @relation(fields: [submissionId], references: [id])
+  placement          RecruiterPlacement? @relation(fields: [placementId], references: [id])
+  candidate          RecruiterCandidate? @relation(fields: [candidateId], references: [id])
+  invoice            RecruiterInvoice? @relation(fields: [invoiceId], references: [id])
+
+  @@index([recruiterProfileId])
+  @@index([clientId])
+  @@index([status])
+  @@map("recruitment_fees")
+}
+
+model RecruiterInvoice {
+  id                 String           @id @default(cuid())
+  recruiterProfileId String
+  clientId           String
+  invoiceNumber      String           @unique
+  issueDate          DateTime         @default(now())
+  dueDate            DateTime?
+  amount             Decimal          @db.Decimal(12, 2)
+  tax                Decimal          @default(0) @db.Decimal(12, 2)
+  total              Decimal          @db.Decimal(12, 2)
+  currency           String           @default("INR")
+  status             InvoiceStatus    @default(DRAFT)
+  pdfUrl             String?
+  paidAt             DateTime?
+  notes              String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  recruiterProfile   RecruiterProfile @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  client             RecruiterClient  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  fees               RecruitmentFee[]
+  payments           RecruiterPayment[]
+
+  @@index([recruiterProfileId])
+  @@index([clientId])
+  @@index([invoiceNumber])
+  @@map("recruiter_invoices")
+}
+
+model RecruiterPayment {
+  id                 String           @id @default(cuid())
+  recruiterProfileId String
+  invoiceId          String?
+  clientId           String?
+  amount             Decimal          @db.Decimal(12, 2)
+  method             String?
+  transactionId      String?
+  receivedAt         DateTime         @default(now())
+  notes              String?
+  createdAt          DateTime         @default(now())
+  recruiterProfile   RecruiterProfile @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  invoice            RecruiterInvoice? @relation(fields: [invoiceId], references: [id])
+  client             RecruiterClient? @relation(fields: [clientId], references: [id])
+
+  @@index([recruiterProfileId])
+  @@map("recruiter_payments")
+}
+
+model RecruiterDocument {
+  id                 String            @id @default(cuid())
+  recruiterProfileId String
+  candidateId        String?
+  clientId           String?
+  category           RecruiterDocumentCategory @default(OTHER)
+  fileName           String
+  fileUrl            String
+  fileSize           Int?
+  visibility         DocumentVisibility @default(PRIVATE)
+  uploadedBy         String?
+  createdAt          DateTime          @default(now())
+  recruiterProfile   RecruiterProfile  @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  candidate          RecruiterCandidate? @relation(fields: [candidateId], references: [id])
+  client             RecruiterClient?  @relation(fields: [clientId], references: [id])
+  uploader           User?             @relation("RecruiterDocumentUploader", fields: [uploadedBy], references: [id])
+
+  @@index([recruiterProfileId])
+  @@index([candidateId])
+  @@map("recruiter_documents")
+}
+
+model RecruiterReview {
+  id               String           @id @default(cuid())
+  recruiterProfileId String
+  clientId         String?
+  rating           Int              @default(5)
+  communication    Int?
+  candidateQuality Int?
+  speed            Int?
+  professionalism  Int?
+  comment          String?
+  isModerated      Boolean          @default(false)
+  isPublic         Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  recruiterProfile RecruiterProfile @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  client           RecruiterClient? @relation(fields: [clientId], references: [id])
+
+  @@index([recruiterProfileId])
+  @@map("recruiter_reviews")
+}
+
+enum AgencyType {
+  RECRUITMENT_CONSULTANCY
+  MANPOWER_SUPPLY
+  STAFFING_COMPANY
+  PLACEMENT_CONSULTANCY
+  EXECUTIVE_SEARCH
+  HR_CONSULTANCY
+  OUTSOURCING
+  CONTRACT_STAFFING
+  OTHER
+
+  @@map("agency_type")
+}
+
+enum AgencyVerificationStatus {
+  PENDING
+  UNDER_REVIEW
+  VERIFIED
+  REJECTED
+  SUSPENDED
+
+  @@map("agency_verification_status")
+}
+
+enum GeographicCoverage {
+  LOCAL
+  REGIONAL
+  NATIONAL
+  INTERNATIONAL
+
+  @@map("geographic_coverage")
+}
+
+enum ClientStatus {
+  ACTIVE
+  INACTIVE
+  PROSPECT
+
+  @@map("client_status")
+}
+
+enum RequirementStatus {
+  OPEN
+  ON_HOLD
+  CLOSED
+
+  @@map("requirement_status")
+}
+
+enum RequirementPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+
+  @@map("requirement_priority")
+}
+
+enum CandidateSource {
+  JOBPORTAL
+  AGENCY_DATABASE
+  REFERRAL
+  LINKEDIN
+  WEBSITE
+  WALK_IN
+  EMPLOYEE_REFERRAL
+  DIRECT_APPLICATION
+  OTHER
+
+  @@map("candidate_source")
+}
+
+enum CandidateConsentStatus {
+  CONSENT_REQUESTED
+  CONSENT_GRANTED
+  CONSENT_WITHDRAWN
+  CONSENT_EXPIRED
+  NO_CONSENT
+
+  @@map("candidate_consent_status")
+}
+
+enum SubmissionStatus {
+  SOURCED
+  SCREENING
+  SUBMITTED
+  CLIENT_REVIEW
+  SHORTLISTED
+  INTERVIEW
+  SELECTED
+  OFFER
+  OFFER_ACCEPTED
+  JOINED
+  REJECTED
+  WITHDRAWN
+  ON_HOLD
+  REPLACEMENT
+
+  @@map("submission_status")
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  NEGOTIATION
+  WITHDRAWN
+
+  @@map("offer_status")
+}
+
+enum PlacementStatus {
+  ACTIVE
+  JOINED
+  REPLACEMENT_REQUIRED
+  COMPLETED
+
+  @@map("placement_status")
+}
+
+enum FeeType {
+  FIXED_FEE
+  PERCENTAGE_OF_SALARY
+  PER_CANDIDATE
+  MONTHLY_STAFFING
+  CUSTOM
+
+  @@map("fee_type")
+}
+
+enum FeeStatus {
+  EXPECTED
+  INVOICED
+  PENDING
+  PAID
+  OVERDUE
+
+  @@map("fee_status")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+
+  @@map("invoice_status")
+}
+
+enum TeamRole {
+  AGENCY_OWNER
+  RECRUITMENT_MANAGER
+  SENIOR_RECRUITER
+  RECRUITER
+  RECRUITMENT_COORDINATOR
+  ACCOUNT_MANAGER
+  FINANCE
+  VIEWER
+
+  @@map("team_role")
+}
+
+enum RecruiterDocumentCategory {
+  RESUME
+  CANDIDATE_ID
+  EDUCATION_CERT
+  EXPERIENCE_CERT
+  REQUIREMENT_DOC
+  RECRUITMENT_AGREEMENT
+  OFFER_LETTER
+  JOINING_CONFIRMATION
+  INVOICE_DOC
+  PAYMENT_PROOF
+  BUSINESS_REG
+  GST_CERT
+  PAN_DOC
+  LICENSE
+  OFFICE_PROOF
+  OTHER
+
+  @@map("recruiter_document_category")
+}
+
+enum DocumentVisibility {
+  PRIVATE
+  TEAM
+  CLIENT
+  PUBLIC
+
+  @@map("document_visibility")
+}
+
 enum UserRole {
   ADMIN
   EMPLOYER
@@ -897,6 +1580,7 @@ enum InterviewStatus {
   COMPLETED
   CANCELLED
   NO_SHOW
+  RESCHEDULED
 
   @@map("interview_status")
 }

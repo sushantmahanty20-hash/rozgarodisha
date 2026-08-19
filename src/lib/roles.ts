@@ -33,8 +33,9 @@ export function panelHrefForRole(role?: string | null): string {
     case "admin":
       return "/admin";
     case "employer":
-    case "recruiter":
       return "/employer";
+    case "recruiter":
+      return "/recruiter";
     default:
       return "/job-seeker";
   }

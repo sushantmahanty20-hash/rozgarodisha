@@ -1,9 +1,11 @@
+import "dotenv/config";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL!,
+  ssl: { rejectUnauthorized: false },
 });
 const prisma = new PrismaClient({ adapter });
 
@@ -17,6 +19,22 @@ async function main() {
   await prisma.conversation.deleteMany();
   await prisma.notificationPreference.deleteMany();
   await prisma.notification.deleteMany();
+  await prisma.placementReplacement.deleteMany();
+  await prisma.recruiterPayment.deleteMany();
+  await prisma.recruiterInvoice.deleteMany();
+  await prisma.recruitmentFee.deleteMany();
+  await prisma.recruiterOffer.deleteMany();
+  await prisma.recruiterInterview.deleteMany();
+  await prisma.submissionStatusHistory.deleteMany();
+  await prisma.candidateSubmission.deleteMany();
+  await prisma.recruiterCandidate.deleteMany();
+  await prisma.recruitmentRequirement.deleteMany();
+  await prisma.recruiterClientContact.deleteMany();
+  await prisma.recruiterClient.deleteMany();
+  await prisma.recruiterTeamMember.deleteMany();
+  await prisma.recruiterReview.deleteMany();
+  await prisma.recruiterDocument.deleteMany();
+  await prisma.recruiterProfile.deleteMany();
   await prisma.auditLog.deleteMany();
   await prisma.successStory.deleteMany();
   await prisma.fAQ.deleteMany();
@@ -1854,6 +1872,549 @@ async function main() {
     await prisma.message.create({ data: msg });
   }
 
+  // ─── RECRUITER ECOSYSTEM (TalentBridge) ─────────────────────
+  const recruiterUser = await prisma.user.create({
+    data: {
+      name: "Soumya Ranjan Dash",
+      email: "recruiter@jobportal.demo",
+      password: hashedPassword,
+      role: "RECRUITER",
+      emailVerified: true,
+      status: "ACTIVE",
+    },
+  });
+
+  const agency = await prisma.recruiterProfile.create({
+    data: {
+      userId: recruiterUser.id,
+      agencyName: "TalentBridge Consultancy",
+      slug: "talentbridge-consultancy",
+      agencyType: "RECRUITMENT_CONSULTANCY",
+      about:
+        "TalentBridge is a Bhubaneswar-based recruitment consultancy helping IT, fintech and healthcare companies hire exceptional talent across India. We combine deep local networks with a national candidate database of 25,000+ professionals.",
+      website: "https://talentbridge.in",
+      businessEmail: "careers@talentbridge.in",
+      businessPhone: "+91 674 258 9100",
+      officeAddress: "3rd Floor, Fortune Tower, Jayadev Vihar",
+      city: "Bhubaneswar",
+      state: "Odisha",
+      country: "India",
+      zipCode: "751024",
+      yearEstablished: 2016,
+      numEmployees: 45,
+      numRecruiters: 12,
+      industriesServed: "Information Technology, Financial Services, Healthcare, Logistics",
+      specializations: "Full Stack Development, Data Engineering, DevOps, Cloud Architecture, QA Automation",
+      geographicCoverage: "NATIONAL",
+      registrationNumber: "U74999OR2016PTC025812",
+      gstin: "21AACCT1234A1Z5",
+      panNumber: "AACCT1234A",
+      recruitmentLicense: "OR-REC-2016-0441",
+      verificationStatus: "VERIFIED",
+      verifiedAt: new Date(Date.now() - 90 * 864e5),
+    },
+  });
+
+  await prisma.recruiterTeamMember.createMany({
+    data: [
+      { recruiterProfileId: agency.id, name: "Soumya Ranjan Dash", email: "soumya@talentbridge.in", phone: "+91 94370 11223", designation: "Founder & Managing Director", role: "AGENCY_OWNER" },
+      { recruiterProfileId: agency.id, name: "Anita Das", email: "anita@talentbridge.in", phone: "+91 94370 22334", designation: "Recruitment Manager", role: "RECRUITMENT_MANAGER" },
+      { recruiterProfileId: agency.id, name: "Rakesh Mohanty", email: "rakesh@talentbridge.in", phone: "+91 94370 33445", designation: "Senior Recruiter - IT", role: "SENIOR_RECRUITER" },
+      { recruiterProfileId: agency.id, name: "Priyanka Jena", email: "priyanka@talentbridge.in", phone: "+91 94370 44556", designation: "Recruiter", role: "RECRUITER" },
+      { recruiterProfileId: agency.id, name: "Bibhuti Panda", email: "bibhuti@talentbridge.in", phone: "+91 94370 55667", designation: "Recruitment Coordinator", role: "RECRUITMENT_COORDINATOR" },
+      { recruiterProfileId: agency.id, name: "Meera Swain", email: "meera@talentbridge.in", phone: "+91 94370 66778", designation: "Account Manager", role: "ACCOUNT_MANAGER" },
+      { recruiterProfileId: agency.id, name: "Prakash Behera", email: "prakash@talentbridge.in", phone: "+91 94370 77889", designation: "Finance Executive", role: "FINANCE" },
+    ],
+  });
+
+  const clientTechNova = await prisma.recruiterClient.create({
+    data: {
+      recruiterProfileId: agency.id,
+      companyName: "TechNova Solutions",
+      industry: "Information Technology",
+      companySize: "201-500",
+      website: "https://technova.example.com",
+      address: "Infocity, Bhubaneswar",
+      contactPerson: "Rajesh Kumar",
+      designation: "HR Manager",
+      email: "hr@technova.example.com",
+      phone: "+91 674 200 1234",
+      gstin: "21AABCT1234A1Z2",
+      contractStartDate: new Date(Date.now() - 300 * 864e5),
+      paymentTerms: "Net 30",
+      replacementPeriodDays: 90,
+      feeType: "PERCENTAGE_OF_SALARY",
+      feeValue: 8.33,
+      status: "ACTIVE",
+      notes: "Key IT client; annual volume of ~40 positions.",
+    },
+  });
+
+  const clientCloudCore = await prisma.recruiterClient.create({
+    data: {
+      recruiterProfileId: agency.id,
+      companyName: "CloudCore Systems",
+      industry: "Cloud & DevOps",
+      companySize: "51-200",
+      website: "https://cloudcore.example.com",
+      address: "Hyderabad, Telangana",
+      contactPerson: "Ananya Reddy",
+      designation: "Talent Acquisition Lead",
+      email: "ananya@cloudcore.example.com",
+      phone: "+91 40 3456 7890",
+      contractStartDate: new Date(Date.now() - 180 * 864e5),
+      paymentTerms: "Net 45",
+      replacementPeriodDays: 90,
+      feeType: "PERCENTAGE_OF_SALARY",
+      feeValue: 12.5,
+      status: "ACTIVE",
+    },
+  });
+
+  const clientFinEdge = await prisma.recruiterClient.create({
+    data: {
+      recruiterProfileId: agency.id,
+      companyName: "FinEdge Financial",
+      industry: "Financial Technology",
+      companySize: "501-1000",
+      website: "https://finedge.example.com",
+      address: "Gurugram, Haryana",
+      contactPerson: "Vivek Malhotra",
+      designation: "VP - People Operations",
+      email: "vivek@finedge.example.com",
+      phone: "+91 124 456 7890",
+      contractStartDate: new Date(Date.now() - 120 * 864e5),
+      paymentTerms: "Net 30",
+      replacementPeriodDays: 120,
+      feeType: "PERCENTAGE_OF_SALARY",
+      feeValue: 12.5,
+      status: "ACTIVE",
+    },
+  });
+
+  const clientVertex = await prisma.recruiterClient.create({
+    data: {
+      recruiterProfileId: agency.id,
+      companyName: "Vertex Logistics",
+      industry: "Logistics & Supply Chain",
+      companySize: "1000+",
+      website: "https://vertexlogistics.example.com",
+      address: "Mumbai, Maharashtra",
+      contactPerson: "Sandeep Pawar",
+      designation: "HR Director",
+      email: "sandeep@vertexlogistics.example.com",
+      phone: "+91 22 6789 0123",
+      contractStartDate: new Date(Date.now() - 30 * 864e5),
+      feeType: "FIXED_FEE",
+      feeValue: 250000,
+      status: "PROSPECT",
+      notes: "Evaluating agencies — sent proposal on pilot mandate.",
+    },
+  });
+
+  const reqFullStack = await prisma.recruitmentRequirement.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientTechNova.id,
+      title: "Senior Full Stack Developer",
+      openings: 3,
+      description: "Looking for senior full stack developers to build enterprise web platforms for global clients.",
+      requiredSkills: "React, Node.js, TypeScript, PostgreSQL",
+      preferredSkills: "AWS, GraphQL, Docker",
+      experienceMin: 4,
+      experienceMax: 8,
+      education: "B.Tech / MCA",
+      salaryMin: 1200000,
+      salaryMax: 1800000,
+      salaryCurrency: "INR",
+      location: "Bhubaneswar, Odisha",
+      workMode: "HYBRID",
+      employmentType: "FULL_TIME",
+      noticePeriod: "Max 30 days",
+      joiningDeadline: new Date(Date.now() + 60 * 864e5),
+      priority: "URGENT",
+      status: "OPEN",
+    },
+  });
+
+  const reqDevOps = await prisma.recruitmentRequirement.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientCloudCore.id,
+      title: "DevOps Engineer",
+      openings: 2,
+      description: "Automate CI/CD pipelines and manage cloud infrastructure for SaaS products.",
+      requiredSkills: "Docker, Kubernetes, Terraform, Azure",
+      preferredSkills: "ArgoCD, Prometheus, Grafana",
+      experienceMin: 3,
+      experienceMax: 6,
+      salaryMin: 1000000,
+      salaryMax: 1500000,
+      location: "Remote",
+      workMode: "REMOTE",
+      employmentType: "FULL_TIME",
+      priority: "HIGH",
+      status: "OPEN",
+    },
+  });
+
+  const reqDataEngineer = await prisma.recruitmentRequirement.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientFinEdge.id,
+      title: "Data Engineer",
+      openings: 2,
+      description: "Build and maintain data pipelines for risk analytics and reporting.",
+      requiredSkills: "Python, Spark, Airflow, Snowflake",
+      preferredSkills: "dbt, Kafka",
+      experienceMin: 4,
+      experienceMax: 7,
+      salaryMin: 1500000,
+      salaryMax: 2200000,
+      location: "Hyderabad, Telangana",
+      workMode: "HYBRID",
+      employmentType: "FULL_TIME",
+      priority: "HIGH",
+      status: "OPEN",
+    },
+  });
+
+  const reqReactNative = await prisma.recruitmentRequirement.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientTechNova.id,
+      title: "React Native Developer",
+      openings: 1,
+      requiredSkills: "React Native, Redux, TypeScript",
+      experienceMin: 2,
+      experienceMax: 5,
+      salaryMin: 800000,
+      salaryMax: 1200000,
+      location: "Bhubaneswar, Odisha",
+      workMode: "ONSITE",
+      employmentType: "FULL_TIME",
+      priority: "MEDIUM",
+      status: "OPEN",
+    },
+  });
+
+  const reqAzureArchitect = await prisma.recruitmentRequirement.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientCloudCore.id,
+      title: "Azure Cloud Architect",
+      openings: 1,
+      requiredSkills: "Azure, Kubernetes, Networking, Security",
+      experienceMin: 8,
+      experienceMax: 12,
+      salaryMin: 2800000,
+      salaryMax: 3500000,
+      location: "Hyderabad, Telangana",
+      workMode: "HYBRID",
+      employmentType: "FULL_TIME",
+      priority: "LOW",
+      status: "ON_HOLD",
+    },
+  });
+
+  const reqQA = await prisma.recruitmentRequirement.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientFinEdge.id,
+      title: "QA Automation Engineer",
+      openings: 2,
+      requiredSkills: "Selenium, Playwright, Java",
+      experienceMin: 3,
+      experienceMax: 6,
+      salaryMin: 900000,
+      salaryMax: 1300000,
+      location: "Gurugram, Haryana",
+      workMode: "HYBRID",
+      employmentType: "FULL_TIME",
+      priority: "MEDIUM",
+      status: "CLOSED",
+    },
+  });
+
+  const reqOpsManager = await prisma.recruitmentRequirement.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientVertex.id,
+      title: "Operations Manager",
+      openings: 1,
+      requiredSkills: "Logistics, Team Leadership, Process Optimization",
+      experienceMin: 7,
+      experienceMax: 12,
+      salaryMin: 1500000,
+      salaryMax: 2000000,
+      location: "Mumbai, Maharashtra",
+      workMode: "ONSITE",
+      employmentType: "FULL_TIME",
+      priority: "MEDIUM",
+      status: "OPEN",
+    },
+  });
+
+  const candidates = await Promise.all(
+    [
+      { name: "Ankit Sahoo", phone: "+91 90010 11111", email: "ankit.sahoo@example.com", location: "Bhubaneswar", currentTitle: "Senior Full Stack Developer", totalExperienceYrs: 6, skills: "React, Node.js, TypeScript, PostgreSQL", education: "B.Tech CSE", currentSalary: 1450000, expectedSalary: 1800000, noticePeriod: "30 days", preferredLocation: "Bhubaneswar / Remote", source: "LINKEDIN", consentStatus: "CONSENT_GRANTED", consentDate: new Date(Date.now() - 40 * 864e5), consentPurpose: "Recruitment for client mandates", status: "AVAILABLE" },
+      { name: "Sweta Mishra", phone: "+91 90010 22222", email: "sweta.mishra@example.com", location: "Cuttack", currentTitle: "Full Stack Developer", totalExperienceYrs: 4, skills: "React, Node.js, MongoDB", education: "B.Tech IT", currentSalary: 1000000, expectedSalary: 1300000, noticePeriod: "30 days", source: "REFERRAL", consentStatus: "CONSENT_GRANTED", consentDate: new Date(Date.now() - 35 * 864e5), consentPurpose: "Recruitment for client mandates", status: "AVAILABLE" },
+      { name: "Debasis Rout", phone: "+91 90010 33333", email: "debasis.rout@example.com", location: "Bhubaneswar", currentTitle: "DevOps Engineer", totalExperienceYrs: 5, skills: "Docker, Kubernetes, Terraform, Azure", education: "B.Tech ECE", currentSalary: 1100000, expectedSalary: 1450000, noticePeriod: "45 days", preferredLocation: "Remote", source: "AGENCY_DATABASE", consentStatus: "CONSENT_GRANTED", consentDate: new Date(Date.now() - 60 * 864e5), consentPurpose: "Recruitment for client mandates", status: "AVAILABLE" },
+      { name: "Ipsita Behera", phone: "+91 90010 44444", email: "ipsita.behera@example.com", location: "Hyderabad", currentTitle: "Cloud Engineer", totalExperienceYrs: 3.5, skills: "AWS, GCP, Python", education: "M.Tech CSE", currentSalary: 950000, expectedSalary: 1250000, noticePeriod: "30 days", source: "WEBSITE", consentStatus: "CONSENT_GRANTED", consentDate: new Date(Date.now() - 20 * 864e5), consentPurpose: "Recruitment for client mandates", status: "IN_PROCESS" },
+      { name: "Manoj Sahu", phone: "+91 90010 55555", email: "manoj.sahu@example.com", location: "Bengaluru", currentTitle: "Senior Data Engineer", totalExperienceYrs: 6, skills: "Python, Spark, Airflow, Snowflake", education: "B.Tech CSE", currentSalary: 1700000, expectedSalary: 2000000, noticePeriod: "60 days", source: "LINKEDIN", consentStatus: "CONSENT_GRANTED", consentDate: new Date(Date.now() - 25 * 864e5), consentPurpose: "Recruitment for client mandates", status: "IN_PROCESS" },
+      { name: "Rina Pradhan", phone: "+91 90010 66666", email: "rina.pradhan@example.com", location: "Bhubaneswar", currentTitle: "React Native Developer", totalExperienceYrs: 3, skills: "React Native, Redux, TypeScript", education: "B.Tech IT", expectedSalary: 1000000, noticePeriod: "30 days", source: "WALK_IN", consentStatus: "CONSENT_REQUESTED", status: "AVAILABLE" },
+      { name: "Subrat Nayak", phone: "+91 90010 77777", email: "subrat.nayak@example.com", location: "Gurugram", currentTitle: "QA Automation Engineer", totalExperienceYrs: 5, skills: "Selenium, Playwright, Java", education: "B.Tech ECE", currentSalary: 1050000, expectedSalary: 1250000, noticePeriod: "30 days", source: "AGENCY_DATABASE", consentStatus: "CONSENT_GRANTED", consentDate: new Date(Date.now() - 50 * 864e5), consentPurpose: "Recruitment for client mandates", status: "PLACED" },
+      { name: "Tanmay Das", phone: "+91 90010 88888", email: "tanmay.das@example.com", location: "Hyderabad", currentTitle: "Azure Cloud Architect", totalExperienceYrs: 9, skills: "Azure, Kubernetes, Networking, Security", education: "M.Tech CSE", currentSalary: 3000000, expectedSalary: 3400000, noticePeriod: "90 days", source: "REFERRAL", consentStatus: "CONSENT_GRANTED", consentDate: new Date(Date.now() - 15 * 864e5), consentPurpose: "Recruitment for client mandates", status: "AVAILABLE" },
+      { name: "Jaya Mallick", phone: "+91 90010 99999", email: "jaya.mallick@example.com", location: "Bengaluru", currentTitle: "Data Analyst", totalExperienceYrs: 2.5, skills: "SQL, Power BI, Excel", education: "B.Sc Statistics", expectedSalary: 800000, noticePeriod: "15 days", source: "JOBPORTAL", consentStatus: "NO_CONSENT", status: "AVAILABLE" },
+      { name: "Kailash Sethi", phone: "+91 90010 00000", email: "kailash.sethi@example.com", location: "Mumbai", currentTitle: "Operations Manager", totalExperienceYrs: 8, skills: "Logistics, Team Leadership, Process Optimization", education: "MBA", currentSalary: 1650000, expectedSalary: 1900000, noticePeriod: "60 days", source: "DIRECT_APPLICATION", consentStatus: "CONSENT_GRANTED", consentDate: new Date(Date.now() - 10 * 864e5), consentPurpose: "Recruitment for client mandates", status: "IN_PROCESS" },
+    ].map((c) =>
+      prisma.recruiterCandidate.create({
+        data: {
+          recruiterProfileId: agency.id,
+          ...c,
+          source: c.source as never,
+          consentStatus: c.consentStatus as never,
+        },
+      })
+    )
+  );
+
+  const [ankit, sweta, debasis, ipsita, manoj, rina, subrat, tanmay, jaya, kailash] = candidates;
+
+  const submissionData = [
+    { candidateId: ankit.id, clientId: clientTechNova.id, requirementId: reqFullStack.id, submissionDate: new Date(Date.now() - 21 * 864e5), expectedSalary: 1800000, noticePeriod: "30 days", consentStatus: "CONSENT_GRANTED", status: "OFFER" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+      { fromStatus: "SUBMITTED", toStatus: "CLIENT_REVIEW", reason: "Client requested review" },
+      { fromStatus: "CLIENT_REVIEW", toStatus: "SHORTLISTED", reason: "Client shortlisted" },
+      { fromStatus: "SHORTLISTED", toStatus: "INTERVIEW", reason: "Interview scheduled" },
+      { fromStatus: "INTERVIEW", toStatus: "SELECTED", reason: "Cleared technical round" },
+      { fromStatus: "SELECTED", toStatus: "OFFER", reason: "Offer extended" },
+    ] },
+    { candidateId: sweta.id, clientId: clientTechNova.id, requirementId: reqFullStack.id, submissionDate: new Date(Date.now() - 14 * 864e5), expectedSalary: 1300000, noticePeriod: "30 days", consentStatus: "CONSENT_GRANTED", status: "INTERVIEW" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+      { fromStatus: "SUBMITTED", toStatus: "CLIENT_REVIEW", reason: "Client reviewing" },
+      { fromStatus: "CLIENT_REVIEW", toStatus: "SHORTLISTED", reason: "Shortlisted" },
+      { fromStatus: "SHORTLISTED", toStatus: "INTERVIEW", reason: "Interview scheduled" },
+    ] },
+    { candidateId: debasis.id, clientId: clientCloudCore.id, requirementId: reqDevOps.id, submissionDate: new Date(Date.now() - 9 * 864e5), expectedSalary: 1450000, noticePeriod: "45 days", consentStatus: "CONSENT_GRANTED", status: "SHORTLISTED" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+      { fromStatus: "SUBMITTED", toStatus: "SHORTLISTED", reason: "Shortlisted after resume screen" },
+    ] },
+    { candidateId: ipsita.id, clientId: clientCloudCore.id, requirementId: reqDevOps.id, submissionDate: new Date(Date.now() - 5 * 864e5), expectedSalary: 1250000, noticePeriod: "30 days", consentStatus: "CONSENT_GRANTED", status: "SUBMITTED" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+    ] },
+    { candidateId: manoj.id, clientId: clientFinEdge.id, requirementId: reqDataEngineer.id, submissionDate: new Date(Date.now() - 12 * 864e5), expectedSalary: 2000000, noticePeriod: "60 days", consentStatus: "CONSENT_GRANTED", status: "SELECTED" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+      { fromStatus: "SUBMITTED", toStatus: "CLIENT_REVIEW", reason: "Client review" },
+      { fromStatus: "CLIENT_REVIEW", toStatus: "SHORTLISTED", reason: "Shortlisted" },
+      { fromStatus: "SHORTLISTED", toStatus: "INTERVIEW", reason: "Interview scheduled" },
+      { fromStatus: "INTERVIEW", toStatus: "SELECTED", reason: "Selected after final round" },
+    ] },
+    { candidateId: rina.id, clientId: clientTechNova.id, requirementId: reqReactNative.id, submissionDate: new Date(Date.now() - 4 * 864e5), expectedSalary: 1000000, noticePeriod: "30 days", consentStatus: "CONSENT_REQUESTED", status: "SUBMITTED" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+    ] },
+    { candidateId: subrat.id, clientId: clientFinEdge.id, requirementId: reqQA.id, submissionDate: new Date(Date.now() - 30 * 864e5), expectedSalary: 1250000, noticePeriod: "30 days", consentStatus: "CONSENT_GRANTED", status: "JOINED" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+      { fromStatus: "SUBMITTED", toStatus: "SHORTLISTED", reason: "Shortlisted" },
+      { fromStatus: "SHORTLISTED", toStatus: "INTERVIEW", reason: "Interview scheduled" },
+      { fromStatus: "INTERVIEW", toStatus: "SELECTED", reason: "Selected" },
+      { fromStatus: "SELECTED", toStatus: "OFFER", reason: "Offer extended" },
+      { fromStatus: "OFFER", toStatus: "OFFER_ACCEPTED", reason: "Offer accepted" },
+      { fromStatus: "OFFER_ACCEPTED", toStatus: "JOINED", reason: "Joined on date" },
+    ] },
+    { candidateId: tanmay.id, clientId: clientCloudCore.id, requirementId: reqAzureArchitect.id, submissionDate: new Date(Date.now() - 18 * 864e5), expectedSalary: 3400000, noticePeriod: "90 days", consentStatus: "CONSENT_GRANTED", status: "ON_HOLD" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+      { fromStatus: "SUBMITTED", toStatus: "ON_HOLD", reason: "Requirement put on hold by client" },
+    ] },
+    { candidateId: jaya.id, clientId: clientFinEdge.id, requirementId: reqDataEngineer.id, submissionDate: new Date(Date.now() - 16 * 864e5), expectedSalary: 800000, noticePeriod: "15 days", consentStatus: "NO_CONSENT", status: "REJECTED" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+      { fromStatus: "SUBMITTED", toStatus: "REJECTED", reason: "Client rejected — experience mismatch" },
+    ] },
+    { candidateId: kailash.id, clientId: clientVertex.id, requirementId: reqOpsManager.id, submissionDate: new Date(Date.now() - 3 * 864e5), expectedSalary: 1900000, noticePeriod: "60 days", consentStatus: "CONSENT_GRANTED", status: "CLIENT_REVIEW" as const, history: [
+      { fromStatus: "SOURCED", toStatus: "SUBMITTED", reason: "Initial submission" },
+      { fromStatus: "SUBMITTED", toStatus: "CLIENT_REVIEW", reason: "Client reviewing" },
+    ] },
+  ];
+
+  for (const s of submissionData) {
+    const { history, ...data } = s;
+    await prisma.candidateSubmission.create({
+      data: {
+        recruiterProfileId: agency.id,
+        submittedBy: recruiterUser.id,
+        ...data,
+        consentStatus: data.consentStatus as never,
+        status: data.status as never,
+        history: { create: history },
+      },
+    });
+  }
+
+  const submissions = await prisma.candidateSubmission.findMany({ where: { recruiterProfileId: agency.id } });
+  const byCandidate = (id: string) => submissions.find((s) => s.candidateId === id)!;
+
+  await prisma.recruiterInterview.createMany({
+    data: [
+      { recruiterProfileId: agency.id, clientId: clientTechNova.id, requirementId: reqFullStack.id, submissionId: byCandidate(ankit.id).id, candidateId: ankit.id, interviewDate: new Date(Date.now() - 9 * 864e5), interviewType: "VIDEO", interviewer: "Rajesh Kumar (TechNova)", status: "COMPLETED", feedback: "Excellent technical depth. Recommended for next round." },
+      { recruiterProfileId: agency.id, clientId: clientTechNova.id, requirementId: reqFullStack.id, submissionId: byCandidate(sweta.id).id, candidateId: sweta.id, interviewDate: new Date(Date.now() - 2 * 864e5), interviewType: "VIDEO", interviewer: "Rohit Mehta (TechNova Lead)", status: "COMPLETED", feedback: "Good communication. Awaiting panel decision." },
+      { recruiterProfileId: agency.id, clientId: clientCloudCore.id, requirementId: reqDevOps.id, submissionId: byCandidate(debasis.id).id, candidateId: debasis.id, interviewDate: new Date(Date.now() + 3 * 864e5), interviewType: "VIDEO", meetingUrl: "https://meet.example.com/devops-debasis", interviewer: "Kiran Rao (CloudCore)", status: "SCHEDULED" },
+      { recruiterProfileId: agency.id, clientId: clientCloudCore.id, requirementId: reqDevOps.id, submissionId: byCandidate(ipsita.id).id, candidateId: ipsita.id, interviewDate: new Date(Date.now() + 2 * 864e5), interviewType: "PHONE", interviewer: "Kiran Rao (CloudCore)", status: "SCHEDULED" },
+      { recruiterProfileId: agency.id, clientId: clientFinEdge.id, requirementId: reqDataEngineer.id, submissionId: byCandidate(manoj.id).id, candidateId: manoj.id, interviewDate: new Date(Date.now() + 1 * 864e5), interviewType: "VIDEO", meetingUrl: "https://meet.example.com/dataengineer-manoj", interviewer: "Sneha Iyer (FinEdge)", status: "SCHEDULED" },
+      { recruiterProfileId: agency.id, clientId: clientFinEdge.id, requirementId: reqQA.id, submissionId: byCandidate(subrat.id).id, candidateId: subrat.id, interviewDate: new Date(Date.now() - 20 * 864e5), interviewType: "ONSITE", location: "FinEdge Office, Gurugram", interviewer: "QA Director (FinEdge)", status: "COMPLETED", feedback: "Strong automation portfolio. Hired." },
+      { recruiterProfileId: agency.id, clientId: clientVertex.id, requirementId: reqOpsManager.id, submissionId: byCandidate(kailash.id).id, candidateId: kailash.id, interviewDate: new Date(Date.now() + 5 * 864e5), interviewType: "ONSITE", location: "Vertex HQ, Mumbai", interviewer: "COO (Vertex)", status: "SCHEDULED" },
+    ],
+  });
+
+  await prisma.recruiterOffer.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientTechNova.id,
+      requirementId: reqFullStack.id,
+      submissionId: byCandidate(ankit.id).id,
+      candidateId: ankit.id,
+      offerDate: new Date(Date.now() - 3 * 864e5),
+      position: "Senior Full Stack Developer",
+      salary: 1750000,
+      joiningDate: new Date(Date.now() + 14 * 864e5),
+      status: "ACCEPTED",
+      notes: "18 LPA base + 10% variable. Relocation support included.",
+    },
+  });
+
+  await prisma.recruiterOffer.createMany({
+    data: [
+      {
+        recruiterProfileId: agency.id,
+        clientId: clientFinEdge.id,
+        requirementId: reqDataEngineer.id,
+        submissionId: byCandidate(manoj.id).id,
+        candidateId: manoj.id,
+        offerDate: new Date(Date.now() - 1 * 864e5),
+        position: "Data Engineer",
+        salary: 1850000,
+        joiningDate: new Date(Date.now() + 45 * 864e5),
+        status: "PENDING",
+        notes: "Negotiating bonus structure.",
+      },
+      {
+        recruiterProfileId: agency.id,
+        clientId: clientFinEdge.id,
+        requirementId: reqQA.id,
+        submissionId: byCandidate(subrat.id).id,
+        candidateId: subrat.id,
+        offerDate: new Date(Date.now() - 25 * 864e5),
+        position: "QA Automation Engineer",
+        salary: 1200000,
+        joiningDate: new Date(Date.now() - 18 * 864e5),
+        status: "ACCEPTED",
+      },
+    ],
+  });
+
+  const placementSubrat = await prisma.recruiterPlacement.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientFinEdge.id,
+      requirementId: reqQA.id,
+      submissionId: byCandidate(subrat.id).id,
+      candidateId: subrat.id,
+      position: "QA Automation Engineer",
+      joiningDate: new Date(Date.now() - 18 * 864e5),
+      salary: 1200000,
+      feeAmount: 150000,
+      feeType: "PERCENTAGE_OF_SALARY",
+      placementDate: new Date(Date.now() - 18 * 864e5),
+      guaranteePeriodDays: 90,
+      status: "ACTIVE",
+    },
+  });
+
+  const feeSubrat = await prisma.recruitmentFee.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientFinEdge.id,
+      requirementId: reqQA.id,
+      submissionId: byCandidate(subrat.id).id,
+      placementId: placementSubrat.id,
+      candidateId: subrat.id,
+      feeType: "PERCENTAGE_OF_SALARY",
+      feeValue: 12.5,
+      salaryAmount: 1200000,
+      expectedFee: 150000,
+      status: "PAID",
+      dueDate: new Date(Date.now() - 3 * 864e5),
+    },
+  });
+
+  await prisma.recruitmentFee.createMany({
+    data: [
+      {
+        recruiterProfileId: agency.id,
+        clientId: clientTechNova.id,
+        requirementId: reqFullStack.id,
+        submissionId: byCandidate(ankit.id).id,
+        candidateId: ankit.id,
+        feeType: "PERCENTAGE_OF_SALARY",
+        feeValue: 12.5,
+        salaryAmount: 1750000,
+        expectedFee: 218750,
+        status: "INVOICED",
+      },
+      {
+        recruiterProfileId: agency.id,
+        clientId: clientFinEdge.id,
+        requirementId: reqDataEngineer.id,
+        submissionId: byCandidate(manoj.id).id,
+        candidateId: manoj.id,
+        feeType: "PERCENTAGE_OF_SALARY",
+        feeValue: 12.5,
+        salaryAmount: 1850000,
+        expectedFee: 231250,
+        status: "EXPECTED",
+      },
+    ],
+  });
+
+  const invoice = await prisma.recruiterInvoice.create({
+    data: {
+      recruiterProfileId: agency.id,
+      clientId: clientFinEdge.id,
+      invoiceNumber: "TB-INV-2026-001",
+      issueDate: new Date(Date.now() - 10 * 864e5),
+      dueDate: new Date(Date.now() - 3 * 864e5),
+      amount: 150000,
+      tax: 0,
+      total: 150000,
+      currency: "INR",
+      status: "PAID",
+      paidAt: new Date(Date.now() - 3 * 864e5),
+      notes: `Placement fee for QA Automation Engineer (Subrat Nayak).`,
+    },
+  });
+
+  await prisma.recruitmentFee.update({ where: { id: feeSubrat.id }, data: { invoiceId: invoice.id } });
+
+  await prisma.recruiterPayment.create({
+    data: {
+      recruiterProfileId: agency.id,
+      invoiceId: invoice.id,
+      clientId: clientFinEdge.id,
+      amount: 150000,
+      method: "BANK_TRANSFER",
+      transactionId: "UTRN-884512",
+      receivedAt: new Date(Date.now() - 3 * 864e5),
+      notes: "Net 30 payment for invoice TB-INV-2026-001",
+    },
+  });
+
+  await prisma.notification.createMany({
+    data: [
+      { userId: recruiterUser.id, title: "Pipeline Updated", message: "Ankit Sahoo moved to OFFER for Senior Full Stack Developer (TechNova)", type: "IN_APP" },
+      { userId: recruiterUser.id, title: "Interview Scheduled", message: "Kailash Sethi interview with Vertex Logistics in 5 days", type: "IN_APP" },
+      { userId: recruiterUser.id, title: "Payment Received", message: "₹1,50,000 received from FinEdge Financial", type: "IN_APP" },
+    ],
+  });
+
   console.log("Seed completed successfully!");
   console.log(`Created ${allEmployers.length + 1} employer users`);
   console.log(`Created ${allCandidates.length} candidate users`);
@@ -1863,6 +2424,7 @@ async function main() {
   console.log(`Created ${categories.length} categories`);
   console.log(`Created ${plans.length} subscription plans`);
   console.log(`Created ${blogPosts.length} blog posts`);
+  console.log("Created 1 recruiter agency (TalentBridge) with clients, requirements, candidates and pipeline data");
 }
 
 main()

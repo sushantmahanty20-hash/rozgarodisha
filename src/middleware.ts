@@ -34,6 +34,12 @@ export default withAuth(
       }
     }
 
+    if (pathname.startsWith("/recruiter")) {
+      if (role !== "RECRUITER" && role !== "ADMIN" && role !== "SUPER_ADMIN") {
+        return NextResponse.redirect(new URL(home, req.url));
+      }
+    }
+
     if (pathname.startsWith("/job-seeker")) {
       if (role !== "JOB_SEEKER" && role !== "ADMIN" && role !== "SUPER_ADMIN") {
         return NextResponse.redirect(new URL(home, req.url));
@@ -53,11 +59,13 @@ export const config = {
   matcher: [
     "/employer/:path*",
     "/admin/:path*",
+    "/recruiter/:path*",
     "/job-seeker/:path*",
     "/api/jobs/:path*",
     "/api/users/:path*",
     "/api/companies/:path*",
     "/api/applications/:path*",
     "/api/ai/:path*",
+    "/api/recruiters/:path*",
   ],
 };

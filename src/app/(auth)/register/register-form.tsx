@@ -10,6 +10,7 @@ import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { RecruiterRegisterForm } from "@/components/auth/recruiter-register-form";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import type { OAuthProvider } from "@/lib/oauth-providers";
@@ -18,9 +19,9 @@ export function RegisterForm({ oauthProviders }: { oauthProviders: OAuthProvider
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [activeRole, setActiveRole] = React.useState<"jobseeker" | "employer">(
-    "jobseeker"
-  );
+  const [activeRole, setActiveRole] = React.useState<
+    "jobseeker" | "employer" | "recruiter"
+  >("jobseeker");
 
   const {
     register,
@@ -39,7 +40,7 @@ export function RegisterForm({ oauthProviders }: { oauthProviders: OAuthProvider
     },
   });
 
-  function switchRole(newRole: "jobseeker" | "employer") {
+  function switchRole(newRole: "jobseeker" | "employer" | "recruiter") {
     setActiveRole(newRole);
     setValue("role", newRole);
   }
@@ -77,125 +78,135 @@ export function RegisterForm({ oauthProviders }: { oauthProviders: OAuthProvider
       </div>
 
       {/* Role selector */}
-      <div className="grid grid-cols-2 gap-2 rounded-xl border bg-muted p-1">
-        {(["jobseeker", "employer"] as const).map((r) => (
+      <div className="grid grid-cols-3 gap-2 rounded-xl border bg-muted p-1">
+        {(["jobseeker", "employer", "recruiter"] as const).map((r) => (
           <button
             key={r}
             type="button"
             onClick={() => switchRole(r)}
             className={cn(
-              "rounded-lg px-4 py-2.5 text-sm font-medium transition-all",
+              "rounded-lg px-2 py-2.5 text-xs font-medium transition-all sm:text-sm",
               activeRole === r
                 ? "bg-background text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
-            {r === "jobseeker" ? "Job Seeker" : "Employer"}
+            {r === "jobseeker"
+              ? "Job Seeker"
+              : r === "employer"
+                ? "Employer"
+                : "Recruiter / Staffing Consultant"}
           </button>
         ))}
       </div>
 
-      {/* Social signups */}
-      <OAuthButtons providers={oauthProviders} disabled={isLoading} />
+      {activeRole === "recruiter" ? (
+        <RecruiterRegisterForm />
+      ) : (
+        <>
+          {/* Social signups */}
+          <OAuthButtons providers={oauthProviders} disabled={isLoading} />
 
-      {oauthProviders.length > 0 && (
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              or continue with email
-            </span>
-          </div>
-        </div>
+          {oauthProviders.length > 0 && (
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  or continue with email
+                </span>
+              </div>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <input type="hidden" {...register("role")} value={activeRole} />
+
+            <Input
+              label="Full Name"
+              placeholder="John Doe"
+              leftIcon={<User className="h-4 w-4" />}
+              error={errors.name?.message}
+              {...register("name")}
+            />
+
+            <Input
+              label="Email"
+              type="email"
+              placeholder="you@example.com"
+              leftIcon={<Mail className="h-4 w-4" />}
+              error={errors.email?.message}
+              {...register("email")}
+            />
+
+            <Input
+              label="Phone (optional)"
+              type="tel"
+              placeholder="+1 (555) 000-0000"
+              leftIcon={<Phone className="h-4 w-4" />}
+            />
+
+            <div className="relative">
+              <Input
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Min. 8 characters"
+                leftIcon={<Lock className="h-4 w-4" />}
+                rightIcon={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                }
+                error={errors.password?.message}
+                {...register("password")}
+              />
+            </div>
+
+            <Input
+              label="Confirm Password"
+              type="password"
+              placeholder="Re-enter your password"
+              leftIcon={<Lock className="h-4 w-4" />}
+              error={errors.confirmPassword?.message}
+              {...register("confirmPassword")}
+            />
+
+            <label className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                className="mt-0.5 h-4 w-4 rounded border-input"
+                {...register("acceptTerms")}
+              />
+              <span className="text-sm text-muted-foreground">
+                I agree to the{" "}
+                <Link href="/terms" className="text-primary hover:underline">
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link href="/privacy" className="text-primary hover:underline">
+                  Privacy Policy
+                </Link>
+              </span>
+            </label>
+            {errors.acceptTerms && (
+              <p className="text-xs text-destructive">{errors.acceptTerms.message}</p>
+            )}
+
+            <Button type="submit" className="w-full" loading={isLoading}>
+              {isLoading ? "Creating account..." : "Create account"}
+            </Button>
+          </form>
+        </>
       )}
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <input type="hidden" {...register("role")} value={activeRole} />
-
-        <Input
-          label="Full Name"
-          placeholder="John Doe"
-          leftIcon={<User className="h-4 w-4" />}
-          error={errors.name?.message}
-          {...register("name")}
-        />
-
-        <Input
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          leftIcon={<Mail className="h-4 w-4" />}
-          error={errors.email?.message}
-          {...register("email")}
-        />
-
-        <Input
-          label="Phone (optional)"
-          type="tel"
-          placeholder="+1 (555) 000-0000"
-          leftIcon={<Phone className="h-4 w-4" />}
-        />
-
-        <div className="relative">
-          <Input
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            placeholder="Min. 8 characters"
-            leftIcon={<Lock className="h-4 w-4" />}
-            rightIcon={
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </button>
-            }
-            error={errors.password?.message}
-            {...register("password")}
-          />
-        </div>
-
-        <Input
-          label="Confirm Password"
-          type="password"
-          placeholder="Re-enter your password"
-          leftIcon={<Lock className="h-4 w-4" />}
-          error={errors.confirmPassword?.message}
-          {...register("confirmPassword")}
-        />
-
-        <label className="flex items-start gap-2">
-          <input
-            type="checkbox"
-            className="mt-0.5 h-4 w-4 rounded border-input"
-            {...register("acceptTerms")}
-          />
-          <span className="text-sm text-muted-foreground">
-            I agree to the{" "}
-            <Link href="/terms" className="text-primary hover:underline">
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link href="/privacy" className="text-primary hover:underline">
-              Privacy Policy
-            </Link>
-          </span>
-        </label>
-        {errors.acceptTerms && (
-          <p className="text-xs text-destructive">{errors.acceptTerms.message}</p>
-        )}
-
-        <Button type="submit" className="w-full" loading={isLoading}>
-          {isLoading ? "Creating account..." : "Create account"}
-        </Button>
-      </form>
 
       <p className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}

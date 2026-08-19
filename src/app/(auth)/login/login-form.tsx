@@ -72,7 +72,9 @@ export function LoginForm({ oauthProviders }: { oauthProviders: OAuthProvider[] 
 
       if (role === "ADMIN" || role === "SUPER_ADMIN") {
         router.push("/admin");
-      } else if (role === "EMPLOYER" || role === "HR_MANAGER" || role === "RECRUITER") {
+      } else if (role === "RECRUITER") {
+        router.push("/recruiter");
+      } else if (role === "EMPLOYER" || role === "HR_MANAGER") {
         router.push("/employer");
       } else {
         router.push("/job-seeker");

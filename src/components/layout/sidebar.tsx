@@ -71,6 +71,7 @@ const adminNav: SidebarSection[] = [
     items: [
       { label: "All Companies", href: "/admin/companies", icon: Building2 },
       { label: "Pending Verification", href: "/admin/companies?status=PENDING", icon: FileCheck, badge: 5 },
+      { label: "Recruiter Agencies", href: "/admin/recruiters", icon: Search },
     ],
   },
   {
