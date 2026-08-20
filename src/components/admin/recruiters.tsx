@@ -12,6 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { toast } from "sonner";
 import { cn, formatDate } from "@/lib/utils";
 import { verificationStyles, num } from "@/lib/recruiter-ui";
+import { useAdminView } from "@/store/use-admin-view";
 
 interface Recruiter {
   id: string;
@@ -32,6 +33,11 @@ export function AdminRecruitersPage() {
   const [search, setSearch] = React.useState("");
   const [preview, setPreview] = React.useState<Recruiter | null>(null);
   const [busyId, setBusyId] = React.useState<string | null>(null);
+  const setView = useAdminView((s) => s.setView);
+
+  React.useEffect(() => {
+    setView({ section: "companies", value: "recruiter-agencies" });
+  }, [setView]);
 
   const load = () => {
     fetch("/api/admin/recruiters")

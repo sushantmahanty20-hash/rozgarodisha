@@ -239,7 +239,7 @@ export function Footer() {
       <div className="border-t border-[#e2e8f0] dark:border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-6 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
           <p className="text-xs text-[#94a3b8] dark:text-gray-500">
-            &copy; {new Date().getFullYear()} JobPortal. All rights reserved.
+            &copy; {new Date().getFullYear()} Sushant Kumar Mahanty. All Rights Reserved.
           </p>
 
           {/* Social Links */}
