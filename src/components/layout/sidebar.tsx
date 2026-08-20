@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -306,6 +306,7 @@ function isPathnameActive(pathname: string, href: string, baseHref: string): boo
 
 export function Sidebar({ collapsed = false, onToggleCollapse, user, className }: SidebarProps) {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const adminView = useAdminView(state => state.view)
   const role = user?.role || "admin"
   const nav = getNavForRole(role)
@@ -316,8 +317,25 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
     setManualExpanded((prev) => prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label])
   }
 
+  const currentUrl = React.useMemo(() => {
+    const qs = searchParams.toString()
+    return qs ? `${pathname}?${qs}` : pathname
+  }, [pathname, searchParams])
+
   const expandedItems = React.useMemo(() => {
-    if (role !== "admin") return manualExpanded
+    if (role !== "admin") {
+      const autoExpanded: string[] = []
+      for (const section of nav) {
+        for (const item of section.items) {
+          if (item.children) {
+            const anyChildActive = item.children.some((child) => child.href === currentUrl)
+            if (anyChildActive) autoExpanded.push(item.label)
+          }
+        }
+      }
+      const merged = new Set([...manualExpanded, ...autoExpanded])
+      return Array.from(merged)
+    }
 
     const autoExpanded: string[] = []
     for (const section of adminNav) {
@@ -333,7 +351,7 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
     }
     const merged = new Set([...manualExpanded, ...autoExpanded])
     return Array.from(merged)
-  }, [manualExpanded, adminView, role])
+  }, [manualExpanded, adminView, role, nav, currentUrl])
 
   const isItemActive = (item: SidebarItem): boolean => {
     if (role === "admin") {
@@ -349,7 +367,7 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
       const childView = getViewFromHref(child.href)
       return isViewActive(childView, adminView)
     }
-    return pathname === child.href.split("?")[0]
+    return currentUrl === child.href
   }
 
   return (
