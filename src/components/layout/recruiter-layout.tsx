@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   LayoutDashboard, Building2, Users, FileText, Search, Send,
@@ -96,6 +96,7 @@ export function RecruiterLayout({
   user?: RecruiterUser;
 }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(false);
 
@@ -142,8 +143,11 @@ export function RecruiterLayout({
               <div className="space-y-0.5">
                 {section.items.map((item) => {
                   const base = item.href.split("?")[0];
-                  const isActive =
-                    pathname === base || (pathname.startsWith(base) && base !== "/recruiter");
+                  const itemQuery = item.href.includes("?") ? item.href.split("?")[1] : "";
+                  const currentQuery = searchParams.toString();
+                  const isActive = itemQuery
+                    ? pathname === base && currentQuery === itemQuery
+                    : pathname === base || (pathname.startsWith(base) && base !== "/recruiter");
                   const Icon = item.icon;
                   return (
                     <Link

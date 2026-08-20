@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { X, Clock, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -77,7 +78,13 @@ const statusColors: Record<string, "success" | "warning" | "info" | "secondary" 
 };
 
 export default function MyApplicationsPage() {
+  const searchParams = useSearchParams();
   const [expandedId, setExpandedId] = React.useState<string | null>(null);
+  const statusFilter = searchParams.get("status")?.toUpperCase() || "";
+
+  const filteredApps = statusFilter
+    ? applications.filter((a) => a.status === statusFilter)
+    : applications;
 
   function handleWithdraw() {
     toast.success("Application withdrawn");
@@ -91,7 +98,12 @@ export default function MyApplicationsPage() {
       </div>
 
       <div className="space-y-4">
-        {applications.map((app) => (
+        {filteredApps.length === 0 ? (
+          <div className="rounded-xl border border-dashed p-12 text-center">
+            <p className="text-sm font-semibold">No Applications Found</p>
+            <p className="mt-1 text-sm text-muted-foreground">No applications match this filter.</p>
+          </div>
+        ) : filteredApps.map((app) => (
           <Card key={app.id}>
             <CardContent className="p-6">
               <div className="flex items-start gap-4">

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Search,
   MoreHorizontal,
@@ -115,13 +116,28 @@ const pipelineColumns = [
 ];
 
 export default function EmployerApplicationsPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [view, setView] = React.useState<"pipeline" | "table">("table");
   const [search, setSearch] = React.useState("");
+  const statusFromUrl = searchParams.get("status")?.toUpperCase() || "";
+  const [statusFilter, setStatusFilter] = React.useState(statusFromUrl);
+
+  React.useEffect(() => {
+    setStatusFilter(searchParams.get("status")?.toUpperCase() || "");
+  }, [searchParams]);
+
+  const changeStatus = (val: string) => {
+    setStatusFilter(val);
+    const qs = val ? `?status=${val}` : "";
+    router.push(`/employer/applications${qs}`);
+  };
 
   const filteredApplications = applications.filter(
     (a) =>
-      a.candidate.toLowerCase().includes(search.toLowerCase()) ||
-      a.job.toLowerCase().includes(search.toLowerCase())
+      (a.candidate.toLowerCase().includes(search.toLowerCase()) ||
+        a.job.toLowerCase().includes(search.toLowerCase())) &&
+      (!statusFilter || a.status === statusFilter)
   );
 
   return (
@@ -150,14 +166,29 @@ export default function EmployerApplicationsPage() {
       </div>
 
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          placeholder="Search by candidate or job title..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-10"
-        />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search by candidate or job title..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => changeStatus(e.target.value)}
+          className="h-10 rounded-xl border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          <option value="">All Status</option>
+          <option value="APPLIED">Applied</option>
+          <option value="SHORTLISTED">Shortlisted</option>
+          <option value="INTERVIEW">Interview</option>
+          <option value="HR_ROUND">HR Round</option>
+          <option value="OFFERED">Offered</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
       </div>
 
       {view === "pipeline" ? (

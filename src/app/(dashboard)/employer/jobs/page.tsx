@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Search,
   Plus,
@@ -44,9 +45,32 @@ const statusConfig: Record<string, { variant: "success" | "warning" | "secondary
 };
 
 export default function EmployerJobsPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [search, setSearch] = React.useState("");
-  const [statusFilter, setStatusFilter] = React.useState("all");
   const [page, setPage] = React.useState(1);
+
+  const statusFromUrl = (searchParams.get("status") || "all").toLowerCase();
+  const statusMap: Record<string, string> = {
+    ACTIVE: "published",
+    DRAFT: "draft",
+    PAUSED: "paused",
+    CLOSED: "closed",
+  };
+  const initialStatus = statusMap[statusFromUrl.toUpperCase()] || statusFromUrl;
+  const [statusFilter, setStatusFilter] = React.useState(initialStatus);
+
+  React.useEffect(() => {
+    const s = (searchParams.get("status") || "all").toLowerCase();
+    const mapped = statusMap[s.toUpperCase()] || s;
+    setStatusFilter(mapped);
+  }, [searchParams]);
+
+  const changeStatus = (val: string) => {
+    setStatusFilter(val);
+    const qs = val === "all" ? "" : `?status=${val.toUpperCase()}`;
+    router.push(`/employer/jobs${qs}`);
+  };
 
   const filteredJobs = mockJobs.filter((job) => {
     const matchesSearch = job.title.toLowerCase().includes(search.toLowerCase());
@@ -81,7 +105,7 @@ export default function EmployerJobsPage() {
             </div>
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => changeStatus(e.target.value)}
               className="h-10 rounded-xl border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="all">All Status</option>
