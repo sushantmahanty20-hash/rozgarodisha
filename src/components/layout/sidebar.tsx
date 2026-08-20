@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -9,7 +10,7 @@ import {
   BarChart3, Shield, Megaphone, CreditCard, ChevronLeft, ChevronDown,
   LogOut, Search, UserCheck, Clock, TrendingUp, AlertTriangle, Eye, Zap, DollarSign,
   PieChart, Activity, Star, Headphones, FileCheck, Layers,
-  BookOpen, HelpCircle,
+  BookOpen, HelpCircle, ExternalLink, Bookmark, MessageSquare, Bell,
   type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -131,11 +132,118 @@ const adminNav: SidebarSection[] = [
   },
 ]
 
+const employerNav: SidebarSection[] = [
+  {
+    title: "Overview",
+    items: [
+      { label: "Dashboard", href: "/employer", icon: LayoutDashboard },
+    ],
+  },
+  {
+    title: "Recruitment",
+    items: [
+      {
+        label: "My Jobs", href: "/employer/jobs", icon: FileText,
+        children: [
+          { label: "All Jobs", href: "/employer/jobs" },
+          { label: "Active Listings", href: "/employer/jobs?status=ACTIVE" },
+          { label: "Drafts", href: "/employer/jobs?status=DRAFT" },
+          { label: "Closed", href: "/employer/jobs?status=CLOSED" },
+        ],
+      },
+      {
+        label: "Applications", href: "/employer/applications", icon: Users,
+        children: [
+          { label: "All Applications", href: "/employer/applications" },
+          { label: "New", href: "/employer/applications?status=NEW" },
+          { label: "Shortlisted", href: "/employer/applications?status=SHORTLISTED" },
+          { label: "Interviewed", href: "/employer/applications?status=INTERVIEWED" },
+        ],
+      },
+      { label: "Candidates", href: "/employer/candidates", icon: UserCheck },
+      { label: "Interviews", href: "/employer/interviews", icon: Clock },
+    ],
+  },
+  {
+    title: "Company",
+    items: [
+      { label: "Company Profile", href: "/employer/company", icon: Building2 },
+    ],
+  },
+  {
+    title: "Messages",
+    items: [
+      { label: "Messages", href: "/employer/messages", icon: MessageSquare },
+      { label: "Notifications", href: "/employer/notifications", icon: Bell },
+    ],
+  },
+  {
+    title: "Account",
+    items: [
+      { label: "Settings", href: "/employer/settings", icon: Settings },
+    ],
+  },
+]
+
+const jobSeekerNav: SidebarSection[] = [
+  {
+    title: "Overview",
+    items: [
+      { label: "Dashboard", href: "/job-seeker", icon: LayoutDashboard },
+    ],
+  },
+  {
+    title: "Job Search",
+    items: [
+      { label: "Browse Jobs", href: "/jobs", icon: Search },
+      { label: "Saved Jobs", href: "/job-seeker/saved-jobs", icon: Bookmark },
+    ],
+  },
+  {
+    title: "My Activity",
+    items: [
+      {
+        label: "Applications", href: "/job-seeker/applications", icon: FileText,
+        children: [
+          { label: "All Applications", href: "/job-seeker/applications" },
+          { label: "Pending", href: "/job-seeker/applications?status=PENDING" },
+          { label: "Shortlisted", href: "/job-seeker/applications?status=SHORTLISTED" },
+          { label: "Rejected", href: "/job-seeker/applications?status=REJECTED" },
+        ],
+      },
+      { label: "Interviews", href: "/job-seeker/interviews", icon: Clock },
+    ],
+  },
+  {
+    title: "Profile",
+    items: [
+      { label: "My Profile", href: "/job-seeker/profile", icon: Users },
+      { label: "My Resume", href: "/job-seeker/resume", icon: FileText },
+    ],
+  },
+  {
+    title: "Messages",
+    items: [
+      { label: "Messages", href: "/job-seeker/messages", icon: MessageSquare },
+      { label: "Notifications", href: "/job-seeker/notifications", icon: Bell },
+    ],
+  },
+]
+
 const roleLabels: Record<UserRole, string> = {
   admin: "Super Admin",
   employer: "Employer",
   recruiter: "Recruiter",
   jobseeker: "Job Seeker",
+}
+
+function getNavForRole(role: UserRole): SidebarSection[] {
+  switch (role) {
+    case "admin": return adminNav
+    case "employer": return employerNav
+    case "jobseeker": return jobSeekerNav
+    default: return adminNav
+  }
 }
 
 const getViewFromHref = (href: string): { section: string; value: string } | null => {
@@ -178,7 +286,7 @@ const getViewFromItem = (item: SidebarItem): { section: string; value: string } 
   return getViewFromHref(item.href)
 }
 
-const getViewFromChild = (parentItem: SidebarItem, child: { label: string; href: string }): { section: string; value: string } | null => {
+const getViewFromChild = (_parentItem: SidebarItem, child: { label: string; href: string }): { section: string; value: string } | null => {
   return getViewFromHref(child.href)
 }
 
@@ -188,23 +296,19 @@ const isViewActive = (
 ): boolean => {
   if (!itemView) return false
   if (itemView.section !== storeView.section) return false
-  const itemValue = itemView.value
-  const storeValue = storeView.value
+  return itemView.value === storeView.value
+}
 
-  if (itemView.section === "user-management") {
-    return itemValue === storeValue
-  }
-  if (itemView.section === "jobs-management") {
-    return itemValue === storeValue
-  }
-  if (itemView.section === "companies") {
-    return itemValue === storeValue
-  }
-  return false
+function isPathnameActive(pathname: string, href: string, baseHref: string): boolean {
+  const base = href.split("?")[0]
+  return pathname === base || (pathname.startsWith(base) && base !== baseHref)
 }
 
 export function Sidebar({ collapsed = false, onToggleCollapse, user, className }: SidebarProps) {
+  const pathname = usePathname()
   const adminView = useAdminView(state => state.view)
+  const role = user?.role || "admin"
+  const nav = getNavForRole(role)
 
   const [manualExpanded, setManualExpanded] = React.useState<string[]>([])
 
@@ -213,6 +317,8 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
   }
 
   const expandedItems = React.useMemo(() => {
+    if (role !== "admin") return manualExpanded
+
     const autoExpanded: string[] = []
     for (const section of adminNav) {
       for (const item of section.items) {
@@ -227,7 +333,24 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
     }
     const merged = new Set([...manualExpanded, ...autoExpanded])
     return Array.from(merged)
-  }, [manualExpanded, adminView])
+  }, [manualExpanded, adminView, role])
+
+  const isItemActive = (item: SidebarItem): boolean => {
+    if (role === "admin") {
+      const itemView = getViewFromItem(item)
+      return isViewActive(itemView, adminView)
+    }
+    const base = item.href.split("?")[0]
+    return pathname === base || (pathname.startsWith(base) && base !== "/employer" && base !== "/job-seeker" && base !== "/admin")
+  }
+
+  const isChildActive = (child: { label: string; href: string }): boolean => {
+    if (role === "admin") {
+      const childView = getViewFromHref(child.href)
+      return isViewActive(childView, adminView)
+    }
+    return pathname === child.href.split("?")[0]
+  }
 
   return (
     <aside className={cn(
@@ -258,7 +381,7 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
       {/* Navigation */}
       <ScrollArea className="flex-1 py-3">
         <nav className="space-y-5 px-3">
-          {adminNav.map((section) => (
+          {nav.map((section) => (
             <div key={section.title}>
               {!collapsed && (
                 <h4 className="mb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-[#94a3b8] dark:text-gray-500">
@@ -267,16 +390,9 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
               )}
               <div className="space-y-0.5">
                 {section.items.map((item) => {
-                  const itemView = getViewFromItem(item)
-                  const active = isViewActive(itemView, adminView)
-
-                  const childActiveStates = item.children
-                    ? item.children.map((child) => {
-                        const childView = getViewFromChild(item, child)
-                        return isViewActive(childView, adminView)
-                      })
-                    : []
-                  const hasActiveChild = childActiveStates.some(Boolean)
+                  const active = isItemActive(item)
+                  const childStates = item.children ? item.children.map(isChildActive) : []
+                  const hasActiveChild = childStates.some(Boolean)
 
                   return (
                     <SidebarLink
@@ -285,7 +401,7 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
                       collapsed={collapsed}
                       isActive={active}
                       hasActiveChild={hasActiveChild}
-                      childActiveStates={childActiveStates}
+                      childActiveStates={childStates}
                       expandedItems={expandedItems}
                       onToggleExpand={toggleExpand}
                     />
@@ -296,6 +412,17 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
           ))}
         </nav>
       </ScrollArea>
+
+      {/* Visit Website */}
+      {!collapsed && (
+        <div className="px-3 pb-2">
+          <Link href="/"
+            className="flex items-center gap-3 rounded-lg border border-dashed border-[#2563eb]/20 bg-[#2563eb]/5 px-3 py-2 text-[13px] font-medium text-[#2563eb] transition-colors hover:bg-[#2563eb]/10 dark:border-[#818cf8]/20 dark:bg-[#818cf8]/5 dark:text-[#818cf8] dark:hover:bg-[#818cf8]/10">
+            <ExternalLink className="h-4 w-4 shrink-0" />
+            <span className="flex-1 truncate">Visit Website</span>
+          </Link>
+        </div>
+      )}
 
       {/* User Section */}
       {user && (

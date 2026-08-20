@@ -35,22 +35,26 @@ const roleLabels: Record<UserRole, string> = {
 
 const profileMenus: Record<UserRole, { label: string; href: string }[]> = {
   admin: [
+    { label: "Visit Website", href: "/" },
     { label: "Admin Profile", href: "/admin/settings" },
     { label: "Security", href: "/admin/settings?tab=security" },
     { label: "Users", href: "/admin/users" },
     { label: "Dashboard", href: "/admin" },
   ],
   employer: [
+    { label: "Visit Website", href: "/" },
     { label: "Company Profile", href: "/employer/company" },
     { label: "My Jobs", href: "/employer/jobs" },
     { label: "Applications", href: "/employer/applications" },
     { label: "Interviews", href: "/employer/interviews" },
   ],
   recruiter: [
+    { label: "Visit Website", href: "/" },
     { label: "Company Profile", href: "/employer/company" },
     { label: "My Jobs", href: "/employer/jobs" },
   ],
   jobseeker: [
+    { label: "Visit Website", href: "/" },
     { label: "My Profile", href: "/job-seeker/profile" },
     { label: "My Resume", href: "/job-seeker/resume" },
     { label: "Applications", href: "/job-seeker/applications" },

@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Building2, Users, FileText, Search, Send,
   Phone, BadgeCheck, DollarSign, BarChart3, UserCog, CreditCard, Settings,
   Bell, MessageSquare, LogOut, Menu, Briefcase, ChevronDown, Plus, Landmark,
-  ShieldCheck, Star, TrendingUp, FileSpreadsheet, GitBranch, Crown,
+  ShieldCheck, Star, TrendingUp, FileSpreadsheet, GitBranch, Crown, ExternalLink,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -186,6 +186,16 @@ export function RecruiterLayout({
         </nav>
       </ScrollArea>
 
+      {!collapsed && (
+        <div className="px-3 pb-2">
+          <Link href="/"
+            className="flex items-center gap-3 rounded-lg border border-dashed border-[#2563eb]/20 bg-[#2563eb]/5 px-3 py-2 text-[13px] font-medium text-[#60a5fa] transition-colors hover:bg-[#2563eb]/10">
+            <ExternalLink className="h-4 w-4 shrink-0" />
+            <span className="flex-1 truncate">Visit Website</span>
+          </Link>
+        </div>
+      )}
+
       {user && (
         <div className="border-t border-white/10 p-3">
           <div className={cn("flex items-center gap-3 rounded-xl bg-white/5 px-3 py-2.5", collapsed && "justify-center px-0")}>
@@ -300,6 +310,13 @@ export function RecruiterLayout({
             </div>
             <ChevronDown className="hidden h-3.5 w-3.5 text-[#94a3b8] sm:block" />
           </div>
+
+          <Link
+            href="/"
+            className="hidden items-center gap-1.5 rounded-xl border border-[#e2e8f0] bg-background px-3 py-2 text-sm font-medium text-[#2563eb] hover:bg-[#f1f5f9] sm:flex dark:border-white/10"
+          >
+            <ExternalLink className="h-4 w-4" /> Visit Website
+          </Link>
 
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
