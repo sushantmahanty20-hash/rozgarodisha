@@ -50,28 +50,43 @@ const adminNav: SidebarSection[] = [
   {
     title: "User Management",
     items: [
-      { label: "All Users", href: "/admin/users", icon: Users },
-      { label: "Job Seekers", href: "/admin/users?role=JOB_SEEKER", icon: UserCheck },
-      { label: "Employers", href: "/admin/users?role=EMPLOYER", icon: Building2 },
-      { label: "Recruiters", href: "/admin/users?role=RECRUITER", icon: Search },
-      { label: "Admin Users", href: "/admin/users?role=ADMIN", icon: Shield },
+      {
+        label: "User Management", href: "/admin/users", icon: Users,
+        children: [
+          { label: "All Users", href: "/admin/users" },
+          { label: "Job Seekers", href: "/admin/users?role=JOB_SEEKER" },
+          { label: "Employers", href: "/admin/users?role=EMPLOYER" },
+          { label: "Recruiters", href: "/admin/users?role=RECRUITER" },
+          { label: "Admin Users", href: "/admin/users?role=ADMIN" },
+        ],
+      },
     ],
   },
   {
     title: "Jobs Management",
     items: [
-      { label: "All Jobs", href: "/admin/jobs", icon: FileText },
-      { label: "Pending Jobs", href: "/admin/jobs?status=PENDING", icon: Clock, badge: 8 },
-      { label: "Active Jobs", href: "/admin/jobs?status=ACTIVE", icon: Zap },
-      { label: "Reported Jobs", href: "/admin/jobs?status=REPORTED", icon: AlertTriangle, badge: 3 },
+      {
+        label: "Jobs Management", href: "/admin/jobs", icon: FileText,
+        children: [
+          { label: "All Jobs", href: "/admin/jobs" },
+          { label: "Pending Jobs", href: "/admin/jobs?status=PENDING" },
+          { label: "Active Jobs", href: "/admin/jobs?status=ACTIVE" },
+          { label: "Reported Jobs", href: "/admin/jobs?status=REPORTED" },
+        ],
+      },
     ],
   },
   {
     title: "Companies",
     items: [
-      { label: "All Companies", href: "/admin/companies", icon: Building2 },
-      { label: "Pending Verification", href: "/admin/companies?status=PENDING", icon: FileCheck, badge: 5 },
-      { label: "Recruiter Agencies", href: "/admin/recruiters", icon: Search },
+      {
+        label: "Companies", href: "/admin/companies", icon: Building2,
+        children: [
+          { label: "All Companies", href: "/admin/companies" },
+          { label: "Pending Verification", href: "/admin/companies?status=PENDING" },
+          { label: "Recruiter Agencies", href: "/admin/recruiters" },
+        ],
+      },
     ],
   },
   {
@@ -123,8 +138,7 @@ const roleLabels: Record<UserRole, string> = {
   jobseeker: "Job Seeker",
 }
 
-const getViewFromItem = (item: SidebarItem): { section: string; value: string } => {
-  const href = item.href
+const getViewFromHref = (href: string): { section: string; value: string } | null => {
   if (href.includes("/admin/users")) {
     const role = href.split("role=")[1]?.split("&")[0] || "all"
     const valueMap: Record<string, string> = {
@@ -135,6 +149,9 @@ const getViewFromItem = (item: SidebarItem): { section: string; value: string } 
       ADMIN: "admin-users",
     }
     return { section: "user-management", value: valueMap[role] || "all" }
+  }
+  if (href.includes("/admin/recruiters")) {
+    return { section: "companies", value: "recruiter-agencies" }
   }
   if (href.includes("/admin/jobs")) {
     const status = href.split("status=")[1]?.split("&")[0] || "all"
@@ -154,57 +171,63 @@ const getViewFromItem = (item: SidebarItem): { section: string; value: string } 
     }
     return { section: "companies", value: valueMap[status] || "all" }
   }
-  if (href.includes("/admin/recruiters")) {
-    return { section: "companies", value: "recruiter-agencies" }
-  }
-  return { section: "unknown", value: "unknown" }
+  return null
+}
+
+const getViewFromItem = (item: SidebarItem): { section: string; value: string } | null => {
+  return getViewFromHref(item.href)
+}
+
+const getViewFromChild = (parentItem: SidebarItem, child: { label: string; href: string }): { section: string; value: string } | null => {
+  return getViewFromHref(child.href)
 }
 
 const isViewActive = (
-  itemView: { section: string; value: string },
+  itemView: { section: string; value: string } | null,
   storeView: AdminView
 ): boolean => {
+  if (!itemView) return false
   if (itemView.section !== storeView.section) return false
   const itemValue = itemView.value
   const storeValue = storeView.value
 
   if (itemView.section === "user-management") {
-    const map: Record<string, string> = {
-      all: "all",
-      "job-seekers": "job-seekers",
-      employers: "employers",
-      recruiters: "recruiters",
-      "admin-users": "admin-users",
-    }
-    return map[itemValue] === storeValue
+    return itemValue === storeValue
   }
   if (itemView.section === "jobs-management") {
-    const map: Record<string, string> = {
-      all: "all",
-      pending: "pending",
-      active: "active",
-      reported: "reported",
-    }
-    return map[itemValue] === storeValue
+    return itemValue === storeValue
   }
   if (itemView.section === "companies") {
-    const map: Record<string, string> = {
-      all: "all",
-      "pending-verification": "pending-verification",
-      "recruiter-agencies": "recruiter-agencies",
-    }
-    return map[itemValue] === storeValue
+    return itemValue === storeValue
   }
   return false
 }
 
 export function Sidebar({ collapsed = false, onToggleCollapse, user, className }: SidebarProps) {
-  const [expandedItems, setExpandedItems] = React.useState<string[]>([])
   const adminView = useAdminView(state => state.view)
 
+  const [manualExpanded, setManualExpanded] = React.useState<string[]>([])
+
   const toggleExpand = (label: string) => {
-    setExpandedItems((prev) => prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label])
+    setManualExpanded((prev) => prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label])
   }
+
+  const expandedItems = React.useMemo(() => {
+    const autoExpanded: string[] = []
+    for (const section of adminNav) {
+      for (const item of section.items) {
+        if (item.children) {
+          const anyChildActive = item.children.some((child) => {
+            const childView = getViewFromChild(item, child)
+            return isViewActive(childView, adminView)
+          })
+          if (anyChildActive) autoExpanded.push(item.label)
+        }
+      }
+    }
+    const merged = new Set([...manualExpanded, ...autoExpanded])
+    return Array.from(merged)
+  }, [manualExpanded, adminView])
 
   return (
     <aside className={cn(
@@ -246,12 +269,23 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
                 {section.items.map((item) => {
                   const itemView = getViewFromItem(item)
                   const active = isViewActive(itemView, adminView)
+
+                  const childActiveStates = item.children
+                    ? item.children.map((child) => {
+                        const childView = getViewFromChild(item, child)
+                        return isViewActive(childView, adminView)
+                      })
+                    : []
+                  const hasActiveChild = childActiveStates.some(Boolean)
+
                   return (
                     <SidebarLink
                       key={item.label}
                       item={item}
                       collapsed={collapsed}
                       isActive={active}
+                      hasActiveChild={hasActiveChild}
+                      childActiveStates={childActiveStates}
                       expandedItems={expandedItems}
                       onToggleExpand={toggleExpand}
                     />
@@ -297,24 +331,26 @@ export function Sidebar({ collapsed = false, onToggleCollapse, user, className }
 }
 
 function SidebarLink({
-  item, collapsed, isActive, expandedItems, onToggleExpand,
+  item, collapsed, isActive, hasActiveChild, childActiveStates, expandedItems, onToggleExpand,
 }: {
-  item: SidebarItem; collapsed: boolean; isActive: boolean; expandedItems: string[]; onToggleExpand: (label: string) => void
+  item: SidebarItem; collapsed: boolean; isActive: boolean; hasActiveChild: boolean;
+  childActiveStates: boolean[]; expandedItems: string[]; onToggleExpand: (label: string) => void
 }) {
   const hasChildren = item.children && item.children.length > 0
   const isExpanded = expandedItems.includes(item.label)
   const Icon = item.icon
 
   const linkContent = (asLink = true) => {
+    const effectiveActive = isActive || hasActiveChild
     const cls = cn(
       "group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-all duration-150",
-      isActive ? "bg-[#2563eb]/10 text-[#2563eb] dark:bg-[#818cf8]/10 dark:text-[#818cf8]"
+      effectiveActive ? "bg-[#2563eb]/10 text-[#2563eb] dark:bg-[#818cf8]/10 dark:text-[#818cf8]"
         : "text-[#64748b] hover:bg-[#f1f5f9] hover:text-[#0f172a] dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
     )
     const inner = (<>
       <div className={cn(
         "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all duration-150",
-        isActive ? "bg-[#2563eb] text-white shadow-md shadow-[#2563eb]/25 dark:bg-[#818cf8] dark:shadow-[#818cf8]/25"
+        effectiveActive ? "bg-[#2563eb] text-white shadow-md shadow-[#2563eb]/25 dark:bg-[#818cf8] dark:shadow-[#818cf8]/25"
           : "bg-[#f1f5f9] text-[#64748b] group-hover:bg-[#e2e8f0] group-hover:text-[#0f172a] dark:bg-white/5 dark:group-hover:bg-white/10 dark:group-hover:text-white"
       )}>
         <Icon className="h-4 w-4" />
@@ -353,12 +389,20 @@ function SidebarLink({
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
               <div className="ml-6 mt-0.5 space-y-0.5 border-l-2 border-[#2563eb]/10 pl-3 dark:border-[#818cf8]/10">
-                {item.children!.map((child) => (
-                  <Link key={child.href} href={child.href}
-                    className="flex items-center rounded-lg px-3 py-1.5 text-[13px] text-[#64748b] transition-colors hover:bg-[#f1f5f9] hover:text-[#0f172a] dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white">
-                    {child.label}
-                  </Link>
-                ))}
+                {item.children!.map((child, i) => {
+                  const childActive = childActiveStates[i]
+                  return (
+                    <Link key={child.href} href={child.href}
+                      className={cn(
+                        "flex items-center rounded-lg px-3 py-1.5 text-[13px] transition-colors",
+                        childActive
+                          ? "bg-[#2563eb]/10 font-medium text-[#2563eb] dark:bg-[#818cf8]/10 dark:text-[#818cf8]"
+                          : "text-[#64748b] hover:bg-[#f1f5f9] hover:text-[#0f172a] dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+                      )}>
+                      {child.label}
+                    </Link>
+                  )
+                })}
               </div>
             </motion.div>
           )}
